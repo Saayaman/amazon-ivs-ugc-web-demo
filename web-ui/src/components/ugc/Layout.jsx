@@ -1,19 +1,19 @@
-import React, { Component } from 'react';
-import { Redirect, withRouter } from 'react-router-dom';
-import * as config from '../../config';
-import * as util from '../util';
+import React, { Component } from "react";
+import { Redirect, withRouter } from "react-router-dom";
+import * as config from "../../config";
+import * as util from "../util";
 
 // Components
-import Home from './Home';
-import Channel from './Channel';
-import Settings from './Settings';
-import Messages from '../common/Messages';
-import Header from '../common/Header';
-import SignIn from './modals/SignIn';
-import SignUp from './modals/SignUp';
+import Home from "./Home";
+import Channel from "./Channel";
+import Settings from "./Settings";
+import Messages from "../common/Messages";
+import Header from "../common/Header";
+import SignIn from "./modals/SignIn";
+import SignUp from "./modals/SignUp";
 
 // Mock data
-import { mockStreams } from '../../__test__/mocks/streams-mocks';
+import { mockStreams } from "../../__test__/mocks/streams-mocks";
 
 class Layout extends Component {
   constructor() {
@@ -29,9 +29,9 @@ class Layout extends Component {
       showSettings: false,
 
       showMessage: false,
-      messageType: '',
-      message: '',
-    }
+      messageType: "",
+      message: "",
+    };
   }
 
   componentDidMount() {
@@ -39,7 +39,7 @@ class Layout extends Component {
     document.addEventListener("keydown", this.handleKeyDown);
 
     // Get User Auth Data
-    const auth = util.getWithExpiry('ugc');
+    const auth = util.getWithExpiry("ugc");
     if (auth && Object.keys(auth).length) {
       this.setUserAuth(auth);
       this.getUserInfo(auth);
@@ -61,9 +61,9 @@ class Layout extends Component {
         const json = await response.json();
         this.setUserInfo(json);
       } else {
-        throw new Error('Unable to get user information.')
+        throw new Error("Unable to get user information.");
       }
-    } catch(error) {
+    } catch (error) {
       console.log(error.message);
     }
   }
@@ -71,13 +71,15 @@ class Layout extends Component {
   async changeAttribute(auth, name, key, value) {
     try {
       const baseUrl = util.getApiUrlBase();
-      const url = `${baseUrl}user/attr?access_token=${encodeURIComponent(auth.AccessToken)}`;
+      const url = `${baseUrl}user/attr?access_token=${encodeURIComponent(
+        auth.AccessToken
+      )}`;
       const options = {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
-          "Name": key,
-          "Value": value
-        })
+          Name: key,
+          Value: value,
+        }),
       };
 
       const response = await fetch(url, options);
@@ -87,22 +89,23 @@ class Layout extends Component {
       } else {
         throw new Error(`Unable change ${name}`);
       }
-    } catch(error) {
+    } catch (error) {
       console.log(error.message);
       this.onFailure(`Unable change ${name}`);
     }
   }
 
   handleKeyDown = (e) => {
-    if (e.keyCode === 27) { // keyCode 27 is Escape key
-      if(this.state.showMessage) {
+    if (e.keyCode === 27) {
+      // keyCode 27 is Escape key
+      if (this.state.showMessage) {
         this.setState({ showMessage: false });
       }
     }
-  }
+  };
 
   handleSignOut = () => {
-    util.removeSession('ugc');
+    util.removeSession("ugc");
     this.resetStates();
 
     if (config.USE_MOCK_DATA) {
@@ -111,77 +114,84 @@ class Layout extends Component {
     } else {
       this.getLiveStreams();
     }
-  }
+  };
 
   onSuccess = (message) => {
-    this.setState({
-      showMessage: true,
-      messageType: 'success',
-      message,
-    }, () => {
-      setTimeout(() => {
-         this.setState({ showMessage: false });
-      }, 5000);
-    })
-  }
+    this.setState(
+      {
+        showMessage: true,
+        messageType: "success",
+        message,
+      },
+      () => {
+        setTimeout(() => {
+          this.setState({ showMessage: false });
+        }, 5000);
+      }
+    );
+  };
 
   onFailure = (message) => {
-    this.setState({
-      showMessage: true,
-      messageType: 'error',
-      message
-    }, () => {
-      setTimeout(() => {
-         this.setState({ showMessage: false });
-      }, 5000);
-    })
-  }
+    this.setState(
+      {
+        showMessage: true,
+        messageType: "error",
+        message,
+      },
+      () => {
+        setTimeout(() => {
+          this.setState({ showMessage: false });
+        }, 5000);
+      }
+    );
+  };
 
   getCurrentPath = () => {
     const currentPath = util.getBasePath();
     return currentPath;
-  }
+  };
 
   showSignIn = () => {
     this.setState({ showSignIn: true });
-  }
+  };
 
   showSignUp = () => {
     this.setState({ showSignUp: true });
-  }
+  };
 
   closeSignIn = () => {
     this.setState({ showSignIn: false });
-  }
+  };
 
   closeSignUp = () => {
     this.setState({ showSignUp: false });
-  }
+  };
 
   setUserInfo = (userInfo) => {
-    const arr = userInfo && userInfo.UserAttributes ? userInfo.UserAttributes : [];
-    const hash = Object.assign({}, ...arr.map(s => ({[s.Name]: s.Value})));
+    const arr =
+      userInfo && userInfo.UserAttributes ? userInfo.UserAttributes : [];
+    const hash = Object.assign({}, ...arr.map((s) => ({ [s.Name]: s.Value })));
 
-    this.setState({ signedIn: true, userInfo: hash, checkedAuth: true, });
-  }
+    this.setState({ signedIn: true, userInfo: hash, checkedAuth: true });
+  };
 
   setUserAuth = (auth) => {
     this.setState({ auth: auth, checkedAuth: false });
-  }
+  };
 
   setAvatar = (avatar) => {
     this.setState({ avatar });
-  }
+  };
 
   closeSettings = (isDeleteAccount) => {
-    this.setUrlPath('');
+    this.setUrlPath("");
     if (isDeleteAccount) {
       this.handleSignOut();
       this.setUrlPath(``);
     } else {
       this.setState({ showSettings: false });
     }
-  }
+  };
 
   render() {
     const {
@@ -193,7 +203,7 @@ class Layout extends Component {
       showSignUp,
       showMessage,
       messageType,
-      message
+      message,
     } = this.state;
 
     // The logged-in user's info
@@ -213,7 +223,7 @@ class Layout extends Component {
       />
     );
     switch (page) {
-      case 'CHANNEL':
+      case "CHANNEL":
         pageComponent = (
           <Channel
             auth={auth}
@@ -227,7 +237,7 @@ class Layout extends Component {
           />
         );
         break;
-      case 'SETTINGS':
+      case "SETTINGS":
         if (signedIn) {
           pageComponent = (
             <Settings
@@ -243,7 +253,7 @@ class Layout extends Component {
             />
           );
         } else {
-          pageComponent = (<Redirect to={{ pathname: '/' }} />);
+          pageComponent = <Redirect to={{ pathname: "/" }} />;
         }
         break;
       default:
@@ -258,7 +268,7 @@ class Layout extends Component {
         break;
     }
 
-    return(
+    return (
       <React.Fragment>
         <Header
           avatar={picture}
@@ -268,7 +278,11 @@ class Layout extends Component {
           signedIn={signedIn}
           myChannel={preferred_username}
         />
-        <Messages showMessage={showMessage} message={message} messageType={messageType} />
+        <Messages
+          showMessage={showMessage}
+          message={message}
+          messageType={messageType}
+        />
         {pageComponent}
         {showSignIn && (
           <SignIn
@@ -291,8 +305,13 @@ class Layout extends Component {
           />
         )}
       </React.Fragment>
-    )
+    );
   }
 }
 
 export default withRouter(Layout);
+
+Layout.propTypes = {
+  location: PropTypes.Object,
+  page: PropTypes.string,
+};

@@ -44,8 +44,8 @@ class VideoPlayer extends Component {
       autoplay: true,
       muted: false,
       controlBar: {
-        'pictureInPictureToggle': false
-      }
+        pictureInPictureToggle: false,
+      },
     };
 
     // instantiate video.js

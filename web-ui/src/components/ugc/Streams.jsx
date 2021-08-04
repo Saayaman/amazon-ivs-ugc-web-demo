@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import * as util from '../util';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import * as util from "../util";
 
 // Stylesheets
-import './Streams.css';
+import "./Streams.css";
 
 class Streams extends Component {
   constructor(props) {
@@ -22,24 +22,31 @@ class Streams extends Component {
           key={stream.username}
           className="stream-item-wrapper full-width br-all-sm"
         >
-          <div className={`stream-item aspect-169 pos-relative mg-b-05 bg-${color}`}>
-            <Link to={streamUrl} className="stream-item-image-link pos-absolute full-width full-height top-0 left-0 fl fl-center">
-              <img
-                className="stream-item__image"
-                src={image}
-                alt={stream.id}
-              />
+          <div
+            className={`stream-item aspect-169 pos-relative mg-b-05 bg-${color}`}
+          >
+            <Link
+              to={streamUrl}
+              className="stream-item-image-link pos-absolute full-width full-height top-0 left-0 fl fl-center"
+            >
+              <img className="stream-item__image" src={image} alt={stream.id} />
             </Link>
           </div>
-          <Link className="stream-item-link" to={streamUrl}>{stream.channelName}</Link>
-          <div className="stream-username-wrapper"><span className="color-hint">{stream.username}</span></div>
+          <Link className="stream-item-link" to={streamUrl}>
+            {stream.channelName}
+          </Link>
+          <div className="stream-username-wrapper">
+            <span className="color-hint">{stream.username}</span>
+          </div>
         </div>
-      )
+      );
     });
   };
 
   render() {
-    const headingText = this.props.showOfflineStreams ? 'All Channels' : 'Live Streams';
+    const headingText = this.props.showOfflineStreams
+      ? "All Channels"
+      : "Live Streams";
     return (
       <div className="pos-relative full-width">
         <div className="mg-b-1">

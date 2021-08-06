@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Redirect, withRouter } from "react-router-dom";
 import * as config from "../../config";
 import * as util from "../util";

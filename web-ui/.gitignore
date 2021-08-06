@@ -5,3 +5,5 @@
 
 # production
 /build
+
+config.js

@@ -2,10 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import { AVATAR_LIST } from "../../constants";
 
-class Avatars extends React.Component {
-  renderAvatar = () => {
+const Avatars = (props) => {
+  const renderAvatar = () => {
     return AVATAR_LIST.map((avatar) => {
-      const selected = avatar.name === this.props.avatar ? " selected" : "";
+      const selected = avatar.name === props.avatar ? " selected" : "";
       return (
         <div
           className={`item-container item-container--square-items${selected}`}
@@ -15,7 +15,7 @@ class Avatars extends React.Component {
             className={`item item--avatar${selected}`}
             src={`${process.env.PUBLIC_URL}/${avatar.image}`}
             alt={avatar.image}
-            onClick={(e) => this.props.handleAvatarClick(e, avatar.name)}
+            onClick={(e) => props.handleAvatarClick(e, avatar.name)}
           />
           {selected && (
             <div className="item-selected-wrapper">
@@ -36,10 +36,8 @@ class Avatars extends React.Component {
     });
   };
 
-  render() {
-    return <React.Fragment>{this.renderAvatar()}</React.Fragment>;
-  }
-}
+  return <>{renderAvatar()}</>;
+};
 
 Avatars.propTypes = {
   avatar: PropTypes.string,

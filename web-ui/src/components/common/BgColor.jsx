@@ -2,10 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import { COLOR_LIST } from "../../constants";
 
-class BgColor extends React.Component {
-  renderColor = () => {
+const BgColor = (props) => {
+  const renderColor = () => {
     return COLOR_LIST.map((bgColor) => {
-      const selected = bgColor.name === this.props.bgColor ? " selected" : "";
+      const selected = bgColor.name === props.bgColor ? " selected" : "";
       const divStyle = { backgroundColor: bgColor.color };
 
       return (
@@ -16,7 +16,7 @@ class BgColor extends React.Component {
           <div
             style={divStyle}
             className={`item item--color${selected}`}
-            onClick={(e) => this.props.handleColorClick(e, bgColor.name)}
+            onClick={(e) => props.handleColorClick(e, bgColor.name)}
           />
           {selected && (
             <div className="item-selected-wrapper">
@@ -37,10 +37,8 @@ class BgColor extends React.Component {
     });
   };
 
-  render() {
-    return <React.Fragment>{this.renderColor()}</React.Fragment>;
-  }
-}
+  return <>{renderColor()}</>;
+};
 
 BgColor.propTypes = {
   bgColor: PropTypes.string,

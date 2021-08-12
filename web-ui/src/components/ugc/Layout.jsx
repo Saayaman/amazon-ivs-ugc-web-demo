@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Redirect, withRouter } from "react-router-dom";
 import * as config from "../../config";
@@ -16,60 +16,53 @@ import SignUp from "./modals/SignUp";
 // Mock data
 import { mockStreams } from "../../__test__/mocks/streams-mocks";
 
-class Layout extends Component {
-  constructor() {
-    super();
-    this.state = {
-      signedIn: false,
-      checkedAuth: false,
-      auth: {},
-      userInfo: {},
+const Layout = (props) => {
+  const [signedIn, setSignedIn] = useState(false);
+  const [checkedAuth, setCheckedAuth] = useState(false);
+  const [auth, setAuth] = useState({});
+  const [userInfo, setUserInfo] = useState({});
 
-      showSignIn: false,
-      showSignUp: false,
-      showSettings: false,
+  const [showSignedIn, setShowSignedIn] = useState(false);
+  const [showSignedUp, setShowSignedUp] = useState(false);
 
-      showMessage: false,
-      messageType: "",
-      message: "",
-    };
-  }
+  const [showMessage, setShowMessage] = useState(false);
+  const [messageType, setMessageType] = useState("");
+  const [message, setMessage] = useState("");
 
-  componentDidMount() {
+  useEffect(() => {
     // Global keybinds
-    document.addEventListener("keydown", this.handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
 
     // Get User Auth Data
     const auth = util.getWithExpiry("ugc");
     if (auth && Object.keys(auth).length) {
-      this.setUserAuth(auth);
-      this.getUserInfo(auth);
+      setUserAuth(auth);
+      getUserInfo(auth);
     } else {
-      this.setState({ checkedAuth: true });
+      setCheckedAuth(true);
     }
-  }
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeyDown);
-  }
-
-  async getUserInfo(auth) {
+  const getUserInfo = async (auth) => {
     try {
       const baseUrl = util.getApiUrlBase();
       const url = `${baseUrl}user?access_token=${auth.AccessToken}`;
       const response = await fetch(url);
       if (response.status === 200) {
         const json = await response.json();
-        this.setUserInfo(json);
+        handleUserInfo(json);
       } else {
         throw new Error("Unable to get user information.");
       }
     } catch (error) {
       console.log(error.message);
     }
-  }
+  };
 
-  async changeAttribute(auth, name, key, value) {
+  const changeAttribute = async (auth, name, key, value) => {
     try {
       const baseUrl = util.getApiUrlBase();
       const url = `${baseUrl}user/attr?access_token=${encodeURIComponent(
@@ -85,230 +78,207 @@ class Layout extends Component {
 
       const response = await fetch(url, options);
       if (response.status === 200) {
-        this.onSuccess(`${name} changed`);
-        this.getUserInfo(auth);
+        onSuccess(`${name} changed`);
+        getUserInfo(auth);
       } else {
         throw new Error(`Unable change ${name}`);
       }
     } catch (error) {
       console.log(error.message);
-      this.onFailure(`Unable change ${name}`);
+      onFailure(`Unable change ${name}`);
     }
-  }
+  };
 
-  handleKeyDown = (e) => {
+  const handleKeyDown = (e) => {
     if (e.keyCode === 27) {
       // keyCode 27 is Escape key
-      if (this.state.showMessage) {
-        this.setState({ showMessage: false });
+      if (showMessage) {
+        setShowMessage(false);
       }
     }
   };
 
-  handleSignOut = () => {
+  const handleSignOut = () => {
     util.removeSession("ugc");
-    this.resetStates();
+    resetStates();
 
     if (config.USE_MOCK_DATA) {
       const { streams } = mockStreams;
-      this.setState({ streams });
+      setStreams(streams);
     } else {
-      this.getLiveStreams();
+      getLiveStreams();
     }
   };
 
-  onSuccess = (message) => {
-    this.setState(
-      {
-        showMessage: true,
-        messageType: "success",
-        message,
-      },
-      () => {
-        setTimeout(() => {
-          this.setState({ showMessage: false });
-        }, 5000);
-      }
-    );
+  const onSuccess = (message) => {
+    setShowMessage(true);
+    setMessageType("success");
+    setMessage(message);
+
+    setTimeout(() => {
+      setShowMessage(false);
+    }, 5000);
   };
 
-  onFailure = (message) => {
-    this.setState(
-      {
-        showMessage: true,
-        messageType: "error",
-        message,
-      },
-      () => {
-        setTimeout(() => {
-          this.setState({ showMessage: false });
-        }, 5000);
-      }
-    );
+  const onFailure = (message) => {
+    setShowMessage(true);
+    setMessageType("error");
+    setMessage(message);
+
+    setTimeout(() => {
+      setShowMessage(false);
+    }, 5000);
   };
 
-  getCurrentPath = () => {
+  const getCurrentPath = () => {
     const currentPath = util.getBasePath();
     return currentPath;
   };
 
-  showSignIn = () => {
-    this.setState({ showSignIn: true });
+  const showSignIn = () => {
+    setShowSignedIn(true);
   };
 
-  showSignUp = () => {
-    this.setState({ showSignUp: true });
+  const showSignUp = () => {
+    setShowSignedUp(true);
   };
 
-  closeSignIn = () => {
-    this.setState({ showSignIn: false });
+  const closeSignIn = () => {
+    setShowSignedIn(false);
   };
 
-  closeSignUp = () => {
-    this.setState({ showSignUp: false });
+  const closeSignUp = () => {
+    setShowSignedUp(false);
   };
 
-  setUserInfo = (userInfo) => {
+  const handleUserInfo = (userInfo) => {
     const arr =
       userInfo && userInfo.UserAttributes ? userInfo.UserAttributes : [];
     const hash = Object.assign({}, ...arr.map((s) => ({ [s.Name]: s.Value })));
 
-    this.setState({ signedIn: true, userInfo: hash, checkedAuth: true });
+    setSignedIn(true);
+    setUserInfo(hash);
+    setCheckedAuth(true);
   };
 
-  setUserAuth = (auth) => {
-    this.setState({ auth: auth, checkedAuth: false });
+  const setUserAuth = (auth) => {
+    setAuth(auth);
+    setCheckedAuth(false);
   };
 
-  setAvatar = (avatar) => {
-    this.setState({ avatar });
+  const setAvatar = (avatar) => {
+    setAvatar(avatar);
   };
 
-  closeSettings = (isDeleteAccount) => {
-    this.setUrlPath("");
+  const closeSettings = (isDeleteAccount) => {
+    setUrlPath("");
     if (isDeleteAccount) {
-      this.handleSignOut();
-      this.setUrlPath(``);
-    } else {
-      this.setState({ showSettings: false });
+      handleSignOut();
+      setUrlPath(``);
     }
   };
 
-  render() {
-    const {
-      auth,
-      checkedAuth,
-      userInfo,
-      signedIn,
-      showSignIn,
-      showSignUp,
-      showMessage,
-      messageType,
-      message,
-    } = this.state;
+  // The logged-in user's info
+  const { preferred_username, picture } = userInfo;
+  const userAvatarUrl = util.getAvatarUrl(picture);
+  // The current URL path from react-router
+  const currentPath = props.location;
 
-    // The logged-in user's info
-    const { preferred_username, picture } = userInfo;
-    const userAvatarUrl = util.getAvatarUrl(picture);
-    // The current URL path from react-router
-    const currentPath = this.props.location;
-
-    // Render components based on route
-    const { page } = this.props;
-    let pageComponent = (
-      <Home
-        showSignIn={this.showSignIn}
-        username={preferred_username}
-        currentPath={currentPath}
-        signedIn={signedIn}
-      />
-    );
-    switch (page) {
-      case "CHANNEL":
-        pageComponent = (
-          <Channel
-            auth={auth}
-            checkedAuth={checkedAuth}
-            onSuccess={this.onSuccess}
-            onFailure={this.onFailure}
-            changeAttribute={this.changeAttribute.bind(this)}
-            userInfo={userInfo}
-            username={preferred_username}
-            signedIn={signedIn}
-          />
-        );
-        break;
-      case "SETTINGS":
-        if (signedIn) {
-          pageComponent = (
-            <Settings
-              userInfo={userInfo}
-              auth={auth}
-              closeSettings={this.closeSettings}
-              setAvatar={this.setAvatar}
-              onSuccess={this.onSuccess}
-              onFailure={this.onFailure}
-              changeAttribute={this.changeAttribute}
-              getUserInfo={this.getUserInfo}
-              setUserInfo={this.setUserInfo}
-            />
-          );
-        } else {
-          pageComponent = <Redirect to={{ pathname: "/" }} />;
-        }
-        break;
-      default:
-        pageComponent = (
-          <Home
-            showSignIn={this.showSignIn}
-            username={preferred_username}
-            currentPath={currentPath}
-            signedIn={signedIn}
-          />
-        );
-        break;
-    }
-
-    return (
-      <React.Fragment>
-        <Header
-          avatar={picture}
-          avatarImg={userAvatarUrl}
+  // Render components based on route
+  const { page } = props;
+  let pageComponent = (
+    <Home
+      showSignIn={showSignIn}
+      username={preferred_username}
+      currentPath={currentPath}
+      signedIn={signedIn}
+    />
+  );
+  switch (page) {
+    case "CHANNEL":
+      pageComponent = (
+        <Channel
+          auth={auth}
           checkedAuth={checkedAuth}
-          handleSignIn={this.showSignIn}
+          onSuccess={onSuccess}
+          onFailure={onFailure}
+          changeAttribute={changeAttribute}
+          userInfo={userInfo}
+          username={preferred_username}
           signedIn={signedIn}
-          myChannel={preferred_username}
         />
-        <Messages
-          showMessage={showMessage}
-          message={message}
-          messageType={messageType}
+      );
+      break;
+    case "SETTINGS":
+      if (signedIn) {
+        pageComponent = (
+          <Settings
+            userInfo={userInfo}
+            auth={auth}
+            closeSettings={closeSettings}
+            setAvatar={setAvatar}
+            onSuccess={onSuccess}
+            onFailure={onFailure}
+            changeAttribute={changeAttribute}
+            getUserInfo={getUserInfo}
+            setUserInfo={handleUserInfo}
+          />
+        );
+      } else {
+        pageComponent = <Redirect to={{ pathname: "/" }} />;
+      }
+      break;
+    default:
+      pageComponent = (
+        <Home
+          showSignIn={showSignIn}
+          username={preferred_username}
+          currentPath={currentPath}
+          signedIn={signedIn}
         />
-        {pageComponent}
-        {showSignIn && (
-          <SignIn
-            closeSignIn={this.closeSignIn}
-            showSignUp={this.showSignUp}
-            getUserInfo={this.getUserInfo}
-            setUserInfo={this.setUserInfo}
-            setUserAuth={this.setUserAuth}
-            handleAppClick={this.handleAppClick}
-          />
-        )}
-        {showSignUp && (
-          <SignUp
-            closeSignUp={this.closeSignUp}
-            showSignIn={this.showSignIn}
-            setUserAuth={this.setUserAuth}
-            getUserInfo={this.getUserInfo}
-            setUserInfo={this.setUserInfo}
-            handleAppClick={this.handleAppClick}
-          />
-        )}
-      </React.Fragment>
-    );
+      );
+      break;
   }
-}
+
+  return (
+    <>
+      <Header
+        avatar={picture}
+        avatarImg={userAvatarUrl}
+        checkedAuth={checkedAuth}
+        handleSignIn={showSignIn}
+        signedIn={signedIn}
+        myChannel={preferred_username}
+      />
+      <Messages
+        showMessage={showMessage}
+        message={message}
+        messageType={messageType}
+      />
+      {pageComponent}
+      {showSignedIn && (
+        <SignIn
+          closeSignIn={closeSignIn}
+          showSignUp={showSignUp}
+          getUserInfo={getUserInfo}
+          setUserInfo={handleUserInfo}
+          setUserAuth={setUserAuth}
+          handleAppClick={handleAppClick}
+        />
+      )}
+      {showSignedUp && (
+        <SignUp
+          closeSignUp={closeSignUp}
+          showSignIn={showSignIn}
+          setUserAuth={setUserAuth}
+          getUserInfo={getUserInfo}
+          setUserInfo={handleUserInfo}
+          handleAppClick={handleAppClick}
+        />
+      )}
+    </>
+  );
+};
 
 export default withRouter(Layout);
 

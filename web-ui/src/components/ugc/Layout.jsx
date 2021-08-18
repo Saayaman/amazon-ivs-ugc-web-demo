@@ -17,7 +17,6 @@ import SignUp from "./modals/SignUp";
 import { mockStreams } from "../../__test__/mocks/streams-mocks";
 
 const Layout = (props) => {
-  console.log("Layout props", props);
   const [signedIn, setSignedIn] = useState(false);
   const [checkedAuth, setCheckedAuth] = useState(false);
   const [auth, setAuth] = useState({});
@@ -245,7 +244,6 @@ const Layout = (props) => {
           getUserInfo={getUserInfo}
           setUserInfo={handleUserInfo}
           setUserAuth={setUserAuth}
-          handleAppClick={props.handleAppClick}
         />
       )}
       {showSignedUp && (
@@ -255,7 +253,6 @@ const Layout = (props) => {
           setUserAuth={setUserAuth}
           getUserInfo={getUserInfo}
           setUserInfo={handleUserInfo}
-          handleAppClick={props.handleAppClick}
         />
       )}
     </React.Fragment>
@@ -265,6 +262,6 @@ const Layout = (props) => {
 export default withRouter(Layout);
 
 Layout.propTypes = {
-  location: PropTypes.Object,
+  location: PropTypes.object,
   page: PropTypes.string,
 };

@@ -10,14 +10,12 @@ const BgColor = (props) => {
 
       return (
         <div
+          style={divStyle}
           className={`item-container item-container--square-items${selected}`}
+          onClick={(e) => props.handleColorClick(e, bgColor.name)}
           key={bgColor.id}
         >
-          <div
-            style={divStyle}
-            className={`item item--color${selected}`}
-            onClick={(e) => props.handleColorClick(e, bgColor.name)}
-          />
+          <div className={`item item--color${selected}`} />
           {selected && (
             <div className="item-selected-wrapper">
               <svg

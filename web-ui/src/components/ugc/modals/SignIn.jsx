@@ -7,8 +7,8 @@ import * as util from "../../util";
 import "./Auth.css";
 
 const SignIn = (props) => {
-  const [email, setEmail] = useState(props.email);
-  const [password, setPassword] = useState(props.password);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [validEmail, setValidEmail] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [unauthorized, setUnauthorized] = useState(false);
@@ -23,7 +23,7 @@ const SignIn = (props) => {
     };
   }, []);
 
-  const signIn = async (email, password) => {
+  const signIn = async () => {
     try {
       const baseUrl = util.getApiUrlBase();
       const url = `${baseUrl}auth`;
@@ -36,23 +36,21 @@ const SignIn = (props) => {
       };
 
       const response = await fetch(url, options);
-      if (response.status === 200) {
-        const json = await response.json();
-        setUnauthorized(false);
-        setProcessing(false);
-        util.setWithExpiry(
-          `ugc`,
-          json.AuthenticationResult,
-          json.AuthenticationResult.ExpiresIn
-        );
-        props.setUserAuth(json.AuthenticationResult);
-        props.getUserInfo(json.AuthenticationResult);
-        props.closeSignIn();
-      } else {
-        throw new Error("Unable to signin");
-      }
+      const json = await response.json();
+
+      util.setWithExpiry(
+        `ugc`,
+        json.AuthenticationResult,
+        json.AuthenticationResult.ExpiresIn
+      );
+      props.setUserAuth(json.AuthenticationResult);
+      props.getUserInfo(json.AuthenticationResult);
+
+      setUnauthorized(false);
+      setProcessing(false);
+      props.closeSignIn();
     } catch (error) {
-      console.log(error.message);
+      console.log("Signin failed: ", error.message);
       setUnauthorized(true);
       setProcessing(false);
     }
@@ -92,7 +90,7 @@ const SignIn = (props) => {
     const validEmail = util.validateEmail(email);
     if (validEmail) {
       setProcessing(true);
-      signIn(email, password);
+      signIn();
     }
 
     setValidEmail(validEmail);
@@ -104,6 +102,9 @@ const SignIn = (props) => {
   return (
     <div className="modal pos-absolute top-0 bottom-0">
       <div className="modal__el modal__el--full-height">
+        <div className="modal_icon" onClick={props.closeSignIn}>
+          <img src="/images/close_icon.svg" />
+        </div>
         <div className="justify-center-wrapper">
           <h2 className="mg-b-2">Sign in</h2>
           <form action="">
@@ -164,7 +165,6 @@ SignIn.propTypes = {
   getUserInfo: PropTypes.func,
   setUserInfo: PropTypes.func,
   setUserAuth: PropTypes.func,
-  handleAppClick: PropTypes.func,
 };
 
 export default SignIn;

@@ -5,8 +5,6 @@ import PropTypes from "prop-types";
 import "./VideoPlayer.css";
 
 const VideoPlayer = ({ videoStream }) => {
-  // const [player, setPlayer] = React.useState(null);
-
   const playerRef = useRef(null);
 
   useEffect(() => {
@@ -54,7 +52,6 @@ const VideoPlayer = ({ videoStream }) => {
     const player = videojs("amazon-ivs-videojs", videoJsOptions);
     playerRef.current = player;
     playerRef.current.ready(handlePlayerReady);
-    // setPlayer(player);
   };
 
   const handlePlayerReady = () => {

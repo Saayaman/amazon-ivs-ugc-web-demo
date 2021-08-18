@@ -38,19 +38,20 @@ const SignIn = (props) => {
       const response = await fetch(url, options);
       const json = await response.json();
 
+      setUnauthorized(false);
+      setProcessing(false);
+
       util.setWithExpiry(
         `ugc`,
         json.AuthenticationResult,
         json.AuthenticationResult.ExpiresIn
       );
+
       props.setUserAuth(json.AuthenticationResult);
       props.getUserInfo(json.AuthenticationResult);
-
-      setUnauthorized(false);
-      setProcessing(false);
       props.closeSignIn();
     } catch (error) {
-      console.log("Signin failed: ", error.message);
+      console.log("Signin failed: ", error);
       setUnauthorized(true);
       setProcessing(false);
     }

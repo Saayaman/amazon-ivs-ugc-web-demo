@@ -113,6 +113,7 @@ header {
 
 .avatar-options {
   position: absolute;
+  z-index: 100;
   top: 5rem;
   background: var(--color-mid-gray);
   border-radius: var(--radius-small);

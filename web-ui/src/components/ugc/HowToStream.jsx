@@ -53,7 +53,6 @@ const HowToStream = ({ isMyChannel }) => {
 };
 
 HowToStream.propTypes = {
-  handleSettings: PropTypes.func,
   isMyChannel: PropTypes.bool,
 };
 

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import * as util from "../util";
@@ -6,13 +6,8 @@ import * as util from "../util";
 // Stylesheets
 import "./Streams.css";
 
-class Streams extends Component {
-  constructor(props) {
-    super();
-  }
-
-  generateStreams = () => {
-    const { streams } = this.props;
+const Streams = ({ streams, showOfflineStreams }) => {
+  const generateStreams = () => {
     return streams.map((stream) => {
       const image = util.getAvatarUrl(stream.avatar);
       const streamUrl = `/channel/${stream.username}`;
@@ -43,22 +38,18 @@ class Streams extends Component {
     });
   };
 
-  render() {
-    const headingText = this.props.showOfflineStreams
-      ? "All Channels"
-      : "Live Streams";
-    return (
-      <div className="pos-relative full-width">
-        <div className="mg-b-1">
-          <h2>{`${headingText}`}</h2>
-        </div>
-        <div className="stream-items grid grid--responsive grid--3">
-          {this.generateStreams()}
-        </div>
+  const headingText = showOfflineStreams ? "All Channels" : "Live Streams";
+  return (
+    <div className="pos-relative full-width">
+      <div className="mg-b-1">
+        <h2>{`${headingText}`}</h2>
       </div>
-    );
-  }
-}
+      <div className="stream-items grid grid--responsive grid--3">
+        {generateStreams()}
+      </div>
+    </div>
+  );
+};
 
 Streams.propTypes = {
   streams: PropTypes.array,

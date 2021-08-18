@@ -130,11 +130,11 @@ const SignUp = (props) => {
     setValidPassword(vPassword);
   };
 
-  handleAvatarClick = (e, name) => {
+  const handleAvatarClick = (e, name) => {
     setAvatar(name);
   };
 
-  handleLinkClick = (e) => {
+  const handleLinkClick = (e) => {
     e.preventDefault();
     props.closeSignUp();
     props.showSignIn();
@@ -197,7 +197,7 @@ const SignUp = (props) => {
                 <div className="mg-b-05">Select Avatar</div>
                 <div className="avatars pos-relative item-select-grid">
                   <Avatars
-                    avatar={avatar}
+                    currentAvatar={avatar}
                     handleAvatarClick={handleAvatarClick}
                   />
                 </div>

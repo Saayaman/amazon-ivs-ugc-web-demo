@@ -32,8 +32,7 @@ const Header = (props) => {
   };
 
   const toggleUserMenu = () => {
-    const showAvatar = state.showAvatarOptions;
-    setShowAvatarOptions(!showAvatar);
+    setShowAvatarOptions(!showAvatarOptions);
   };
 
   const basePath = util.getBasePath();

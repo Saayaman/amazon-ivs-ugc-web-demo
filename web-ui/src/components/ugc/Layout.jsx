@@ -17,6 +17,7 @@ import SignUp from "./modals/SignUp";
 import { mockStreams } from "../../__test__/mocks/streams-mocks";
 
 const Layout = (props) => {
+  console.log("Layout props", props);
   const [signedIn, setSignedIn] = useState(false);
   const [checkedAuth, setCheckedAuth] = useState(false);
   const [auth, setAuth] = useState({});
@@ -130,11 +131,6 @@ const Layout = (props) => {
     }, 5000);
   };
 
-  const getCurrentPath = () => {
-    const currentPath = util.getBasePath();
-    return currentPath;
-  };
-
   const showSignIn = () => {
     setShowSignedIn(true);
   };
@@ -166,10 +162,6 @@ const Layout = (props) => {
     setCheckedAuth(false);
   };
 
-  const setAvatar = (avatar) => {
-    setAvatar(avatar);
-  };
-
   const closeSettings = (isDeleteAccount) => {
     setUrlPath("");
     if (isDeleteAccount) {
@@ -186,62 +178,52 @@ const Layout = (props) => {
 
   // Render components based on route
   const { page } = props;
-  let pageComponent = (
-    <Home
-      showSignIn={showSignIn}
-      username={preferred_username}
-      currentPath={currentPath}
-      signedIn={signedIn}
-    />
-  );
-  switch (page) {
-    case "CHANNEL":
-      pageComponent = (
-        <Channel
-          auth={auth}
-          checkedAuth={checkedAuth}
-          onSuccess={onSuccess}
-          onFailure={onFailure}
-          changeAttribute={changeAttribute}
-          userInfo={userInfo}
-          username={preferred_username}
-          signedIn={signedIn}
-        />
-      );
-      break;
-    case "SETTINGS":
-      if (signedIn) {
-        pageComponent = (
-          <Settings
-            userInfo={userInfo}
+  const pageComponent = () => {
+    switch (page) {
+      case "CHANNEL":
+        return (
+          <Channel
             auth={auth}
-            closeSettings={closeSettings}
-            setAvatar={setAvatar}
+            checkedAuth={checkedAuth}
             onSuccess={onSuccess}
             onFailure={onFailure}
             changeAttribute={changeAttribute}
-            getUserInfo={getUserInfo}
-            setUserInfo={handleUserInfo}
+            userInfo={userInfo}
+            username={preferred_username}
+            signedIn={signedIn}
           />
         );
-      } else {
-        pageComponent = <Redirect to={{ pathname: "/" }} />;
-      }
-      break;
-    default:
-      pageComponent = (
-        <Home
-          showSignIn={showSignIn}
-          username={preferred_username}
-          currentPath={currentPath}
-          signedIn={signedIn}
-        />
-      );
-      break;
-  }
+      case "SETTINGS":
+        if (signedIn) {
+          return (
+            <Settings
+              userInfo={userInfo}
+              auth={auth}
+              closeSettings={closeSettings}
+              onSuccess={onSuccess}
+              onFailure={onFailure}
+              changeAttribute={changeAttribute}
+              getUserInfo={getUserInfo}
+              setUserInfo={handleUserInfo}
+            />
+          );
+        } else {
+          return <Redirect to={{ pathname: "/" }} />;
+        }
+      default:
+        return (
+          <Home
+            showSignIn={showSignIn}
+            username={preferred_username}
+            currentPath={currentPath}
+            signedIn={signedIn}
+          />
+        );
+    }
+  };
 
   return (
-    <>
+    <React.Fragment>
       <Header
         avatar={picture}
         avatarImg={userAvatarUrl}
@@ -255,7 +237,7 @@ const Layout = (props) => {
         message={message}
         messageType={messageType}
       />
-      {pageComponent}
+      {pageComponent()}
       {showSignedIn && (
         <SignIn
           closeSignIn={closeSignIn}
@@ -263,7 +245,7 @@ const Layout = (props) => {
           getUserInfo={getUserInfo}
           setUserInfo={handleUserInfo}
           setUserAuth={setUserAuth}
-          handleAppClick={handleAppClick}
+          handleAppClick={props.handleAppClick}
         />
       )}
       {showSignedUp && (
@@ -273,10 +255,10 @@ const Layout = (props) => {
           setUserAuth={setUserAuth}
           getUserInfo={getUserInfo}
           setUserInfo={handleUserInfo}
-          handleAppClick={handleAppClick}
+          handleAppClick={props.handleAppClick}
         />
       )}
-    </>
+    </React.Fragment>
   );
 };
 

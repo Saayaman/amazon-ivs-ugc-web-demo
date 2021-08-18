@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import * as util from "../util";
 
@@ -12,22 +12,22 @@ import SettingsField from "./SettingsField";
 // Styles
 import "./Settings.css";
 
-class Settings extends Component {
-  constructor() {
-    super();
-    this.state = {
-      oldPassword: "",
-      password: "",
-      confirmPassword: "",
-      validPassword: true,
-      showDelete: false,
-      streamKeyResetDisabled: false,
-    };
-    this.newPasswordRef = React.createRef();
-    this.confirmPasswordRef = React.createRef();
-  }
+const Settings = (props) => {
+  const [oldPassword, setOldPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [validPassword, setValidPassword] = useState(true);
+  const [showDelete, setShowDelete] = useState(false);
+  const [streamKey, setStreamKey] = useState("");
+  const [streamKeyResetDisabled, setStreamKeyResetDisabled] = useState(false);
+  const [username, setUsername] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [bgColor, setBgColor] = useState("");
 
-  async resetStreamKey(auth) {
+  const newPasswordRef = React.createRef();
+  const confirmPasswordRef = React.createRef();
+
+  const resetStreamKey = async (auth) => {
     try {
       const baseUrl = util.getApiUrlBase();
       const url = `${baseUrl}channels/default/streamKey/reset?access_token=${encodeURIComponent(
@@ -36,24 +36,22 @@ class Settings extends Component {
 
       const response = await fetch(url);
       if (response.status === 200) {
-        this.props.onSuccess("Stream Key reset");
+        props.onSuccess("Stream Key reset");
         const json = await response.json();
-        this.setState({
-          streamKey: json.streamKey.value,
-          streamKeyResetDisabled: false,
-        });
+        setStreamKey(json.streamKey.value);
+        setStreamKeyResetDisabled(false);
       } else {
-        this.setState({ streamKeyResetDisabled: false });
+        setStreamKeyResetDisabled(false);
         throw new Error("Unable to reset stream key");
       }
     } catch (error) {
       console.log(error.message);
-      this.setState({ streamKeyResetDisabled: false });
-      this.props.onFailure("Unable to reset stream key");
+      setStreamKeyResetDisabled(false);
+      props.onFailure("Unable to reset stream key");
     }
-  }
+  };
 
-  async changePassword(auth, oldPassword, newPassword) {
+  const changePassword = async (auth, oldPassword, newPassword) => {
     try {
       const baseUrl = util.getApiUrlBase();
       const url = `${baseUrl}user/changePassword?access_token=${encodeURIComponent(
@@ -69,66 +67,68 @@ class Settings extends Component {
 
       const response = await fetch(url, options);
       if (response.status === 200) {
-        this.props.onSuccess(`Password changed`);
-        this.setState({ oldPassword: "", password: "", confirmPassword: "" });
+        props.onSuccess(`Password changed`);
+        setOldPassword("");
+        setPassword("");
+        setConfirmPassword("");
       } else {
         throw new Error(`Unable change password`);
       }
     } catch (error) {
       console.log(error.message);
-      this.props.onFailure(`Unable change password`);
+      props.onFailure(`Unable change password`);
     }
-  }
-
-  handleStreamKeyReset = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    this.setState({ streamKeyResetDisabled: true });
-    this.resetStreamKey(this.props.auth);
   };
 
-  handleStreamKeyCopy = (e) => {
+  const handleStreamKeyReset = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    this.copyText("stream-key-id", "Copied stream key");
+    setStreamKeyResetDisabled(true);
+    resetStreamKey(props.auth);
   };
 
-  handleStreamKeyFocus = (e) => {
+  const handleStreamKeyCopy = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    copyText("stream-key-id", "Copied stream key");
+  };
+
+  const handleStreamKeyFocus = (e) => {
     e.target.select();
-    this.handleStreamKeyCopy(e);
+    handleStreamKeyCopy(e);
   };
 
-  handleServerCopy = (e) => {
+  const handleServerCopy = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    this.copyText("ingest-server-id", "Copied ingest server URL");
+    copyText("ingest-server-id", "Copied ingest server URL");
   };
 
-  handleServerFocus = (e) => {
+  const handleServerFocus = (e) => {
     e.target.select();
-    this.handleServerCopy(e);
+    handleServerCopy(e);
   };
 
-  handleUsernameChange = (e) => {
-    this.setState({ username: e.target.value });
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
   };
 
-  handleUsernameSave = (e, username) => {
+  const handleUsernameSave = (e, username) => {
     e.preventDefault();
     e.stopPropagation();
-    this.props.changeAttribute(
-      this.props.auth,
+    props.changeAttribute(
+      props.auth,
       "Username",
       "preferred_username",
       username
     );
   };
 
-  handleUsernameKeyDown = (e, username) => {
+  const handleUsernameKeyDown = (e, username) => {
     if (e.keyCode === 13 && username) {
       // keyCode 13 is carriage return
-      this.props.changeAttribute(
-        this.props.auth,
+      props.changeAttribute(
+        props.auth,
         "Username",
         "preferred_username",
         username
@@ -136,94 +136,83 @@ class Settings extends Component {
     }
   };
 
-  handleOldPasswordChange = (e) => {
-    this.setState({ oldPassword: e.target.value });
+  const handleOldPasswordChange = (e) => {
+    setOldPassword(e.target.value);
   };
 
-  handlePasswordChange = (e) => {
-    this.setState({ password: e.target.value });
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
   };
 
-  handleConfirmPasswordChange = (e) => {
-    this.setState({ confirmPassword: e.target.value });
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
   };
 
-  handlePasswordSave = (e) => {
+  const handlePasswordSave = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    const { oldPassword, password } = this.state;
-    const validPassword = util.validatePassword(password);
-    this.setState({ validPassword }, () => {
-      if (!validPassword) {
-        this.props.onFailure("Invalid password");
-      } else {
-        this.changePassword(this.props.auth, oldPassword, password);
-      }
-    });
+    const validPw = util.validatePassword(password);
+    if (!validPw) {
+      props.onFailure("Invalid password");
+    } else {
+      changePassword(props.auth, oldPassword, password);
+    }
+    setValidPassword(validPw);
   };
 
-  oldPasswordKeyDown = (e, oldPassword) => {
+  const oldPasswordKeyDown = (e, oldPassword) => {
     if (e.keyCode === 13 && oldPassword) {
       // keyCode 13 is carriage return
-      this.newPasswordRef.current.focus();
+      newPasswordRef.current.focus();
     }
   };
 
-  newPasswordKeyDown = (e, newPassword) => {
+  const newPasswordKeyDown = (e, newPassword) => {
     if (e.keyCode === 13 && newPassword) {
       // keyCode 13 is carriage return
-      this.confirmPasswordRef.current.focus();
+      confirmPasswordRef.current.focus();
     }
   };
 
-  confirmPasswordKeyDown = (e, confirmPassword) => {
+  const confirmPasswordKeyDown = (e, confirmPassword) => {
     if (e.keyCode === 13 && confirmPassword) {
       // keyCode 13 is carriage return
-      const { oldPassword, password } = this.state;
-      const validPassword = util.validatePassword(password);
-      this.setState({ validPassword }, () => {
-        if (!validPassword) {
-          this.props.onFailure("Invalid password");
-        } else {
-          this.changePassword(this.props.auth, oldPassword, password);
-        }
-      });
+      const validPw = util.validatePassword(password);
+      if (!validPw) {
+        props.onFailure("Invalid password");
+      } else {
+        changePassword(props.auth, oldPassword, password);
+      }
+      setValidPassword(validPw);
     }
   };
 
-  handleAvatarClick = (e, name) => {
-    this.setState({ avatar: name }, () => {
-      this.props.changeAttribute(this.props.auth, "Avatar", "picture", name);
-      this.props.setAvatar(name);
-    });
+  const handleAvatarClick = (e, name) => {
+    setAvatar(name);
+    props.changeAttribute(props.auth, "Avatar", "picture", name);
   };
 
-  handleColorClick = (e, name) => {
+  const handleColorClick = (e, name) => {
     e.preventDefault();
     e.stopPropagation();
-    this.setState({ bgColor: name }, () => {
-      const bgColorValue = { bgColor: name };
-      this.props.changeAttribute(
-        this.props.auth,
-        "Color",
-        "profile",
-        bgColorValue
-      );
-    });
+    const bgColorValue = { bgColor: name };
+    props.changeAttribute(props.auth, "Color", "profile", bgColorValue);
+
+    setBgColor(name);
   };
 
-  handleDeleteClick = (e) => {
+  const handleDeleteClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    this.setState({ showDelete: true });
+    setShowDelete(true);
   };
 
-  closeDelete = () => {
-    this.setState({ showDelete: false });
+  const closeDelete = () => {
+    setShowDelete(false);
   };
 
-  copyText = (id, message) => {
+  const copyText = (id, message) => {
     /* Get the text field */
     var copyText = document.getElementById(id);
 
@@ -238,286 +227,263 @@ class Settings extends Component {
 
     /* Alert the copied text */
     if (message) {
-      this.props.onSuccess(`${message}`);
+      props.onSuccess(`${message}`);
     } else {
-      this.props.onSuccess(`Copied the text: ${copyText.value}`);
+      props.onSuccess(`Copied the text: ${copyText.value}`);
     }
   };
 
-  render() {
-    const {
-      streamKey,
-      streamKeyResetDisabled,
-      ingestServer,
-      username,
-      oldPassword,
-      password,
-      confirmPassword,
-      avatar,
-      bgColor,
-      validPassword,
-      showDelete,
-    } = this.state;
+  const { userInfo, auth, onSuccess, onFailure } = props;
+  const userInfoValid = Object.keys(userInfo).length ? true : false;
 
-    const { userInfo, auth, onSuccess, onFailure } = this.props;
+  const currentUsername = !!username
+    ? username
+    : userInfoValid
+    ? userInfo.preferred_username
+    : "";
+  const currentBgColor = !!bgColor
+    ? bgColor
+    : userInfoValid
+    ? userInfo.profile.bgColor
+    : "";
+  const currentAvatar = !!avatar
+    ? avatar
+    : userInfoValid
+    ? userInfo.picture
+    : "";
 
-    const userInfoValid = Object.keys(userInfo).length ? true : false;
-
-    const currentUsername =
-      username !== undefined
-        ? username
-        : userInfoValid
-        ? userInfo.preferred_username
-        : "";
-    const currentBgColor =
-      bgColor !== undefined
-        ? bgColor
-        : userInfoValid
-        ? userInfo.profile.bgColor
-        : "";
-    const currentAvatar =
-      avatar !== undefined ? avatar : userInfoValid ? userInfo.picture : "";
-
-    let currentIngestServer =
-      ingestServer !== undefined
-        ? ingestServer
-        : userInfoValid
-        ? userInfo.profile.defaultChannelDetails.channel.ingestEndpoint
-        : "";
-    if (currentIngestServer) {
-      currentIngestServer = `rtmps://${currentIngestServer}/app/`;
-    }
-
-    let currentStreamKey = "";
-    if (streamKey !== undefined) {
-      currentStreamKey = streamKey;
-    } else if (userInfoValid) {
-      currentStreamKey =
-        userInfo.profile.defaultChannelDetails.streamKey.value ||
-        userInfo.profile.defaultChannelDetails.streamKey.streamKey.value;
-    }
-
-    const streamKeyCopyDisabled = !currentStreamKey;
-    const ingestServerCopyDisabled = !currentIngestServer;
-    const usernameSaveDisabled = !currentUsername;
-    const passwordSaveDisabled =
-      !password || !confirmPassword || password !== confirmPassword;
-
-    return (
-      <React.Fragment>
-        <div className="main full-width full-height">
-          <div className="settings-wrapper mg-2">
-            <h2 className="mg-b-2">Settings</h2>
-            <fieldset className="mg-b-2">
-              <SettingsField
-                labelName="Stream Key"
-                inputId="stream-key-id"
-                className="mg-b-1"
-              >
-                <input
-                  id="stream-key-id"
-                  className="settings-read-only-input mono-text mg-b-0 mg-r-1"
-                  type="text"
-                  placeholder="Key"
-                  value={currentStreamKey}
-                  onFocus={this.handleStreamKeyFocus}
-                  readOnly
-                />
-                <button
-                  className="btn btn--destruct btn--settings mg-b-0 mg-r-1"
-                  onClick={this.handleStreamKeyReset}
-                  disabled={streamKeyResetDisabled}
-                >
-                  Reset
-                </button>
-                <button
-                  className="btn btn--primary btn--settings mg-b-0"
-                  disabled={streamKeyCopyDisabled}
-                  onClick={this.handleStreamKeyCopy}
-                >
-                  Copy
-                </button>
-              </SettingsField>
-
-              <SettingsField
-                labelName="Ingest Server"
-                inputId="ingest-server-id"
-                className="mg-b-3"
-              >
-                <input
-                  id="ingest-server-id"
-                  className="settings-read-only-input mono-text mg-b-0 mg-r-1"
-                  type="text"
-                  placeholder="Server"
-                  value={currentIngestServer}
-                  onFocus={this.handleServerFocus}
-                  readOnly
-                />
-                <button
-                  className="btn btn--primary btn--settings mg-b-0"
-                  disabled={ingestServerCopyDisabled}
-                  onClick={this.handleServerCopy}
-                >
-                  Copy
-                </button>
-              </SettingsField>
-
-              <SettingsField
-                labelName="Username"
-                inputId="username-id"
-                className="mg-b-3"
-              >
-                <input
-                  className="mg-b-0 mg-r-1"
-                  id="username-id"
-                  type="text"
-                  placeholder="Username"
-                  value={currentUsername}
-                  autoComplete="new-password"
-                  onKeyDown={(e) =>
-                    this.handleUsernameKeyDown(e, currentUsername)
-                  }
-                  onChange={this.handleUsernameChange}
-                />
-                <button
-                  className="btn btn--primary btn--settings mg-b-0"
-                  disabled={usernameSaveDisabled}
-                  onClick={(e) => this.handleUsernameSave(e, currentUsername)}
-                >
-                  Save
-                </button>
-              </SettingsField>
-
-              <SettingsField
-                labelName="Current Password"
-                inputId="current-password-id"
-                className="mg-b-1"
-              >
-                <input
-                  className="mg-b-0 settings-input-right-margin"
-                  id="current-password-id"
-                  type="password"
-                  placeholder="Current Password"
-                  value={oldPassword}
-                  onKeyDown={(e) => this.oldPasswordKeyDown(e, oldPassword)}
-                  onChange={this.handleOldPasswordChange}
-                />
-              </SettingsField>
-
-              <SettingsField
-                labelName="New Password"
-                inputId="new-password-id"
-                className="mg-b-1"
-              >
-                <input
-                  className="mg-b-0 settings-input-right-margin"
-                  id="new-password-id"
-                  ref={this.newPasswordRef}
-                  type="password"
-                  placeholder="New Password"
-                  value={password}
-                  onKeyDown={(e) => this.newPasswordKeyDown(e, password)}
-                  onChange={this.handlePasswordChange}
-                />
-              </SettingsField>
-
-              <SettingsField
-                labelName="Confirm Password"
-                inputId="confirm-password-id"
-                className="mg-b-1"
-              >
-                <input
-                  className="mg-b-0 mg-r-1"
-                  id="confirm-password-id"
-                  ref={this.confirmPasswordRef}
-                  type="password"
-                  placeholder="Password"
-                  value={confirmPassword}
-                  onKeyDown={(e) =>
-                    this.confirmPasswordKeyDown(e, confirmPassword)
-                  }
-                  onChange={this.handleConfirmPasswordChange}
-                />
-                <button
-                  className="btn btn--primary btn--settings mg-b-0"
-                  disabled={passwordSaveDisabled}
-                  onClick={this.handlePasswordSave}
-                >
-                  Save
-                </button>
-              </SettingsField>
-              <div className="settings-field mg-b-3">
-                <div className="spacer"></div>
-                <PasswordReq validPassword={validPassword} />
-              </div>
-
-              <SettingsField
-                labelName="Avatar"
-                inputId="avatar-id"
-                className="mg-b-1"
-              >
-                <div className="item-select-container settings-input-right-margin pd-1">
-                  <div
-                    className={`avatars pos-relative item-select-grid item-select-grid--small`}
-                  >
-                    <Avatars
-                      avatar={currentAvatar}
-                      handleAvatarClick={this.handleAvatarClick}
-                    />
-                  </div>
-                </div>
-              </SettingsField>
-
-              <SettingsField
-                labelName="Color"
-                inputId="color-id"
-                className="mg-b-25"
-              >
-                <div className="item-select-container settings-input-right-margin pd-1">
-                  <div
-                    className={`colors pos-relative item-select-grid item-select-grid--small`}
-                  >
-                    <BgColor
-                      bgColor={currentBgColor}
-                      handleColorClick={this.handleColorClick}
-                    />
-                  </div>
-                </div>
-              </SettingsField>
-
-              <SettingsField
-                labelName="Delete Account"
-                inputId="delete-account-id"
-              >
-                <button
-                  className="btn btn--destruct btn--auto-width mg-b-0 pd-x-2"
-                  onClick={this.handleDeleteClick}
-                >
-                  Delete my account
-                </button>
-              </SettingsField>
-            </fieldset>
-          </div>
-        </div>
-        {showDelete && (
-          <DeleteAccount
-            onSuccess={onSuccess}
-            onFailure={onFailure}
-            closeSettings={this.props.closeSettings}
-            closeDelete={this.closeDelete}
-            auth={auth}
-          />
-        )}
-      </React.Fragment>
-    );
+  let currentIngestServer = userInfoValid
+    ? userInfo.profile.defaultChannelDetails.channel.ingestEndpoint
+    : "";
+  if (currentIngestServer) {
+    currentIngestServer = `rtmps://${currentIngestServer}/app/`;
   }
-}
+
+  let currentStreamKey = "";
+
+  if (!!streamKey) {
+    currentStreamKey = streamKey;
+  } else if (userInfoValid) {
+    currentStreamKey =
+      userInfo.profile.defaultChannelDetails.streamKey.value ||
+      userInfo.profile.defaultChannelDetails.streamKey.streamKey.value;
+  }
+
+  const streamKeyCopyDisabled = !currentStreamKey;
+  const ingestServerCopyDisabled = !currentIngestServer;
+  const usernameSaveDisabled = !currentUsername;
+  const passwordSaveDisabled =
+    !password || !confirmPassword || password !== confirmPassword;
+
+  return (
+    <>
+      <div className="main full-width full-height">
+        <div className="settings-wrapper mg-2">
+          <h2 className="mg-b-2">Settings</h2>
+          <fieldset className="mg-b-2">
+            <SettingsField
+              labelName="Stream Key"
+              inputId="stream-key-id"
+              className="mg-b-1"
+            >
+              <input
+                id="stream-key-id"
+                className="settings-read-only-input mono-text mg-b-0 mg-r-1"
+                type="text"
+                placeholder="Key"
+                value={currentStreamKey}
+                onFocus={handleStreamKeyFocus}
+                readOnly
+              />
+              <button
+                className="btn btn--destruct btn--settings mg-b-0 mg-r-1"
+                onClick={handleStreamKeyReset}
+                disabled={streamKeyResetDisabled}
+              >
+                Reset
+              </button>
+              <button
+                className="btn btn--primary btn--settings mg-b-0"
+                disabled={streamKeyCopyDisabled}
+                onClick={handleStreamKeyCopy}
+              >
+                Copy
+              </button>
+            </SettingsField>
+
+            <SettingsField
+              labelName="Ingest Server"
+              inputId="ingest-server-id"
+              className="mg-b-3"
+            >
+              <input
+                id="ingest-server-id"
+                className="settings-read-only-input mono-text mg-b-0 mg-r-1"
+                type="text"
+                placeholder="Server"
+                value={currentIngestServer}
+                onFocus={handleServerFocus}
+                readOnly
+              />
+              <button
+                className="btn btn--primary btn--settings mg-b-0"
+                disabled={ingestServerCopyDisabled}
+                onClick={handleServerCopy}
+              >
+                Copy
+              </button>
+            </SettingsField>
+
+            <SettingsField
+              labelName="Username"
+              inputId="username-id"
+              className="mg-b-3"
+            >
+              <input
+                className="mg-b-0 mg-r-1"
+                id="username-id"
+                type="text"
+                placeholder="Username"
+                value={currentUsername}
+                autoComplete="new-password"
+                onKeyDown={(e) => handleUsernameKeyDown(e, currentUsername)}
+                onChange={handleUsernameChange}
+              />
+              <button
+                className="btn btn--primary btn--settings mg-b-0"
+                disabled={usernameSaveDisabled}
+                onClick={(e) => handleUsernameSave(e, currentUsername)}
+              >
+                Save
+              </button>
+            </SettingsField>
+
+            <SettingsField
+              labelName="Current Password"
+              inputId="current-password-id"
+              className="mg-b-1"
+            >
+              <input
+                className="mg-b-0 settings-input-right-margin"
+                id="current-password-id"
+                type="password"
+                placeholder="Current Password"
+                value={oldPassword}
+                onKeyDown={(e) => oldPasswordKeyDown(e, oldPassword)}
+                onChange={handleOldPasswordChange}
+              />
+            </SettingsField>
+
+            <SettingsField
+              labelName="New Password"
+              inputId="new-password-id"
+              className="mg-b-1"
+            >
+              <input
+                className="mg-b-0 settings-input-right-margin"
+                id="new-password-id"
+                ref={newPasswordRef}
+                type="password"
+                placeholder="New Password"
+                value={password}
+                onKeyDown={(e) => newPasswordKeyDown(e, password)}
+                onChange={handlePasswordChange}
+              />
+            </SettingsField>
+
+            <SettingsField
+              labelName="Confirm Password"
+              inputId="confirm-password-id"
+              className="mg-b-1"
+            >
+              <input
+                className="mg-b-0 mg-r-1"
+                id="confirm-password-id"
+                ref={confirmPasswordRef}
+                type="password"
+                placeholder="Password"
+                value={confirmPassword}
+                onKeyDown={(e) => confirmPasswordKeyDown(e, confirmPassword)}
+                onChange={handleConfirmPasswordChange}
+              />
+              <button
+                className="btn btn--primary btn--settings mg-b-0"
+                disabled={passwordSaveDisabled}
+                onClick={handlePasswordSave}
+              >
+                Save
+              </button>
+            </SettingsField>
+            <div className="settings-field mg-b-3">
+              <div className="spacer"></div>
+              <PasswordReq validPassword={validPassword} />
+            </div>
+
+            <SettingsField
+              labelName="Avatar"
+              inputId="avatar-id"
+              className="mg-b-1"
+            >
+              <div className="item-select-container settings-input-right-margin pd-1">
+                <div
+                  className={`avatars pos-relative item-select-grid item-select-grid--small`}
+                >
+                  <Avatars
+                    currentAvatar={currentAvatar}
+                    handleAvatarClick={handleAvatarClick}
+                  />
+                </div>
+              </div>
+            </SettingsField>
+
+            <SettingsField
+              labelName="Color"
+              inputId="color-id"
+              className="mg-b-25"
+            >
+              <div className="item-select-container settings-input-right-margin pd-1">
+                <div
+                  className={`colors pos-relative item-select-grid item-select-grid--small`}
+                >
+                  <BgColor
+                    bgColor={currentBgColor}
+                    handleColorClick={handleColorClick}
+                  />
+                </div>
+              </div>
+            </SettingsField>
+
+            <SettingsField
+              labelName="Delete Account"
+              inputId="delete-account-id"
+            >
+              <button
+                className="btn btn--destruct btn--auto-width mg-b-0 pd-x-2"
+                onClick={handleDeleteClick}
+              >
+                Delete my account
+              </button>
+            </SettingsField>
+          </fieldset>
+        </div>
+      </div>
+      {showDelete && (
+        <DeleteAccount
+          onSuccess={onSuccess}
+          onFailure={onFailure}
+          closeSettings={props.closeSettings}
+          closeDelete={closeDelete}
+          auth={auth}
+        />
+      )}
+    </>
+  );
+};
 
 Settings.propTypes = {
   userInfo: PropTypes.object,
   auth: PropTypes.object,
   closeSettings: PropTypes.func,
-  setAvatar: PropTypes.func,
   onSuccess: PropTypes.func,
   onFailure: PropTypes.func,
   changeAttribute: PropTypes.func,

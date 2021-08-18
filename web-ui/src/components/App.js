@@ -16,13 +16,13 @@ const App = () => {
         <Route
           exact
           path={`${basePath}settings`}
-          render={(props) => <Layout page="SETTINGS" />}
+          render={(props) => <Layout {...props} page="SETTINGS" />}
         />
         <Route
           path={`${basePath}channel/:user`}
-          render={(props) => <Layout page="CHANNEL" />}
+          render={(props) => <Layout {...props} page="CHANNEL" />}
         />
-        <Route path="/" render={(props) => <Layout page="HOME" />} />
+        <Route path="/" render={(props) => <Layout {...props} page="HOME" />} />
       </Switch>
     </Router>
   );

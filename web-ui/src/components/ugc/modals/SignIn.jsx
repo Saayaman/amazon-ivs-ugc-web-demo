@@ -85,15 +85,14 @@ const SignIn = (props) => {
   };
 
   const handleSignIn = (e) => {
-    e.nativeEvent.stopImmediatePropagation();
-    resetSignIn();
+    e.preventDefault();
 
     const validEmail = util.validateEmail(email);
     if (validEmail) {
       setProcessing(true);
       signIn();
     }
-
+    resetSignIn();
     setValidEmail(validEmail);
   };
 
@@ -135,7 +134,7 @@ const SignIn = (props) => {
               <button
                 className="mg-t-1 btn btn--primary"
                 disabled={signInDisabled}
-                onClick={handleSignIn}
+                onClick={(e) => handleSignIn(e)}
               >
                 {signInText}
               </button>

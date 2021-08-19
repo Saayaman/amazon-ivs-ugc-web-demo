@@ -12,7 +12,6 @@ const SignIn = (props) => {
   const [validEmail, setValidEmail] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [unauthorized, setUnauthorized] = useState(false);
-
   const inputRef = React.createRef();
 
   useEffect(() => {

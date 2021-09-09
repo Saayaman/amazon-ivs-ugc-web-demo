@@ -10,6 +10,7 @@ import HowToStream from "./HowToStream";
 
 // Mock data
 import { mockStreams } from "../../__test__/mocks/streams-mocks";
+import Chat from "../chat/Chat";
 
 const Channel = (props) => {
   const [streamId, setStreamId] = useState("");
@@ -295,8 +296,11 @@ const Channel = (props) => {
 
   return (
     <div className="main stream-container">
-      <div className="content-wrapper mg-2">
-        {videoPlayerComponent}
+      <div className="content-wrapper channel-wrapper mg-2">
+        <div className="stream-content-innner">
+          {videoPlayerComponent}
+          <Chat userInfo={userInfo} />
+        </div>
         <div className="stream-title mg-t-1">
           {titleComponent}
           <div className="channel-meta pd-t-1">

@@ -1,0 +1,86 @@
+/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
+/* SPDX-License-Identifier: MIT-0 */
+
+.col-wrapper {
+  width: 400px;
+  flex-shrink: 0;
+  align-self: stretch;
+  position: relative;
+  border: 1px solid gray;
+  border-radius: 9px;
+  margin-left: 8px;
+}
+
+.chat-wrapper {
+  left: 1rem;
+  right: 1rem;
+  overflow: hidden;
+}
+
+.chat-wrapper .messages {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.chat-line {
+  display: flex;
+  margin: 0 0 5px 0;
+}
+
+.chat-line .username {
+  font-weight: 800;
+  padding-right: .1rem;
+}
+
+.chat-avatar-wrapper {
+  width: 24px;
+  height: 24px;
+  margin-right: 1.2rem;
+  border-radius: 1.4rem;
+  overflow: hidden;
+}
+
+.chat-avatar-wrapper img {
+  width: 100%;
+  height: 100%;
+}
+
+.composer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 15px 0;
+  background: var(--color-bg-chat);
+}
+
+.composer input {
+  width: 100%;
+}
+
+.composer button.btn {
+  margin-bottom: 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.btn:disabled {
+  opacity: .5;
+  background: var(--color-bg-button-primary-default);
+}
+
+@media (max-width: 1080px) {
+  .col-wrapper {
+    width: 100%;
+    height: 100%;
+    flex-grow: 1;
+    margin-left: unset;
+    margin-top: 8px;
+  }
+}

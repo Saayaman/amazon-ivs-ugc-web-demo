@@ -976,47 +976,6 @@ input.rounded {
   margin-right: 1rem;
 }
 
-
-/* Chat */
-.chat-wrapper {
-  position: relative;
-  padding-bottom: calc(var(--input-height) + 30px);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.chat-line {
-  padding: 12px 15px;
-  background: var(--color-bg-chat-bubble);
-  border-radius: var(--input-height);
-  display: flex;
-  margin: 0 0 5px 0;
-}
-
-.chat-line p {
-  display: inline;
-  font-weight: normal;
-}
-
-.chat-line .username {
-  font-weight: 800;
-  padding-right: .1rem;
-}
-
-.composer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 15px 0;
-  background: var(--color-bg-chat);
-}
-
-.composer input {
-  width: 100%;
-}
-
 /* Icons */
 .icon {
   fill: var(--color-text-base);

@@ -72,6 +72,10 @@ header {
   align-items: stretch;
 }
 
+.channel-wrapper {
+  max-width: 1280px;
+}
+
 .content-wrapper .my-channel,
 .content-wrapper .sign-in {
   cursor: pointer;
@@ -147,6 +151,10 @@ header {
 .stream-container .content-wrapper {
   display: flex;
   flex-direction: column;
+}
+
+.stream-content-innner {
+  display: flex;
 }
 
 .channel-meta {
@@ -265,4 +273,10 @@ header {
 .item--small {
   width: 4.8rem;
   height: 4.8rem;
+}
+
+@media (max-width: 1080px) {
+  .stream-content-innner {
+    display: unset;
+  }
 }

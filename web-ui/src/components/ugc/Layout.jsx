@@ -190,6 +190,7 @@ const Layout = (props) => {
             userInfo={userInfo}
             username={preferred_username}
             signedIn={signedIn}
+            handleSignIn={setShowSignedIn}
           />
         );
       case "SETTINGS":
@@ -202,8 +203,6 @@ const Layout = (props) => {
               onSuccess={onSuccess}
               onFailure={onFailure}
               changeAttribute={changeAttribute}
-              getUserInfo={getUserInfo}
-              setUserInfo={handleUserInfo}
             />
           );
         } else {

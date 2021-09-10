@@ -13,6 +13,15 @@ import SettingsField from "./SettingsField";
 import "./Settings.css";
 
 const Settings = (props) => {
+  const {
+    userInfo,
+    auth,
+    onSuccess,
+    onFailure,
+    closeSettings,
+    changeAttribute,
+  } = props;
+
   const [oldPassword, setOldPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -20,7 +29,7 @@ const Settings = (props) => {
   const [showDelete, setShowDelete] = useState(false);
   const [streamKey, setStreamKey] = useState("");
   const [streamKeyResetDisabled, setStreamKeyResetDisabled] = useState(false);
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(userInfo.preferred_username);
   const [avatar, setAvatar] = useState("");
   const [bgColor, setBgColor] = useState("");
 
@@ -36,7 +45,7 @@ const Settings = (props) => {
 
       const response = await fetch(url);
       if (response.status === 200) {
-        props.onSuccess("Stream Key reset");
+        onSuccess("Stream Key reset");
         const json = await response.json();
         setStreamKey(json.streamKey.value);
         setStreamKeyResetDisabled(false);
@@ -47,7 +56,7 @@ const Settings = (props) => {
     } catch (error) {
       console.log(error.message);
       setStreamKeyResetDisabled(false);
-      props.onFailure("Unable to reset stream key");
+      onFailure("Unable to reset stream key");
     }
   };
 
@@ -67,7 +76,7 @@ const Settings = (props) => {
 
       const response = await fetch(url, options);
       if (response.status === 200) {
-        props.onSuccess(`Password changed`);
+        onSuccess(`Password changed`);
         setOldPassword("");
         setPassword("");
         setConfirmPassword("");
@@ -76,7 +85,7 @@ const Settings = (props) => {
       }
     } catch (error) {
       console.log(error.message);
-      props.onFailure(`Unable change password`);
+      onFailure(`Unable change password`);
     }
   };
 
@@ -84,7 +93,7 @@ const Settings = (props) => {
     e.preventDefault();
     e.stopPropagation();
     setStreamKeyResetDisabled(true);
-    resetStreamKey(props.auth);
+    resetStreamKey(auth);
   };
 
   const handleStreamKeyCopy = (e) => {
@@ -109,43 +118,17 @@ const Settings = (props) => {
     handleServerCopy(e);
   };
 
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
-  };
-
   const handleUsernameSave = (e, username) => {
     e.preventDefault();
     e.stopPropagation();
-    props.changeAttribute(
-      props.auth,
-      "Username",
-      "preferred_username",
-      username
-    );
+    changeAttribute(auth, "Username", "preferred_username", username);
   };
 
   const handleUsernameKeyDown = (e, username) => {
     if (e.keyCode === 13 && username) {
       // keyCode 13 is carriage return
-      props.changeAttribute(
-        props.auth,
-        "Username",
-        "preferred_username",
-        username
-      );
+      changeAttribute(auth, "Username", "preferred_username", username);
     }
-  };
-
-  const handleOldPasswordChange = (e) => {
-    setOldPassword(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const handleConfirmPasswordChange = (e) => {
-    setConfirmPassword(e.target.value);
   };
 
   const handlePasswordSave = (e) => {
@@ -154,9 +137,9 @@ const Settings = (props) => {
 
     const validPw = util.validatePassword(password);
     if (!validPw) {
-      props.onFailure("Invalid password");
+      onFailure("Invalid password");
     } else {
-      changePassword(props.auth, oldPassword, password);
+      changePassword(auth, oldPassword, password);
     }
     setValidPassword(validPw);
   };
@@ -180,9 +163,9 @@ const Settings = (props) => {
       // keyCode 13 is carriage return
       const validPw = util.validatePassword(password);
       if (!validPw) {
-        props.onFailure("Invalid password");
+        onFailure("Invalid password");
       } else {
-        changePassword(props.auth, oldPassword, password);
+        changePassword(auth, oldPassword, password);
       }
       setValidPassword(validPw);
     }
@@ -190,14 +173,14 @@ const Settings = (props) => {
 
   const handleAvatarClick = (e, name) => {
     setAvatar(name);
-    props.changeAttribute(props.auth, "Avatar", "picture", name);
+    changeAttribute(auth, "Avatar", "picture", name);
   };
 
   const handleColorClick = (e, name) => {
     e.preventDefault();
     e.stopPropagation();
     const bgColorValue = { bgColor: name };
-    props.changeAttribute(props.auth, "Color", "profile", bgColorValue);
+    changeAttribute(auth, "Color", "profile", bgColorValue);
 
     setBgColor(name);
   };
@@ -206,10 +189,6 @@ const Settings = (props) => {
     e.preventDefault();
     e.stopPropagation();
     setShowDelete(true);
-  };
-
-  const closeDelete = () => {
-    setShowDelete(false);
   };
 
   const copyText = (id, message) => {
@@ -227,20 +206,13 @@ const Settings = (props) => {
 
     /* Alert the copied text */
     if (message) {
-      props.onSuccess(`${message}`);
+      onSuccess(`${message}`);
     } else {
-      props.onSuccess(`Copied the text: ${copyText.value}`);
+      onSuccess(`Copied the text: ${copyText.value}`);
     }
   };
 
-  const { userInfo, auth, onSuccess, onFailure } = props;
   const userInfoValid = Object.keys(userInfo).length ? true : false;
-
-  const currentUsername = !!username
-    ? username
-    : userInfoValid
-    ? userInfo.preferred_username
-    : "";
   const currentBgColor = !!bgColor
     ? bgColor
     : userInfoValid
@@ -271,7 +243,6 @@ const Settings = (props) => {
 
   const streamKeyCopyDisabled = !currentStreamKey;
   const ingestServerCopyDisabled = !currentIngestServer;
-  const usernameSaveDisabled = !currentUsername;
   const passwordSaveDisabled =
     !password || !confirmPassword || password !== confirmPassword;
 
@@ -344,15 +315,15 @@ const Settings = (props) => {
                 id="username-id"
                 type="text"
                 placeholder="Username"
-                value={currentUsername}
+                value={username}
                 autoComplete="new-password"
-                onKeyDown={(e) => handleUsernameKeyDown(e, currentUsername)}
-                onChange={handleUsernameChange}
+                onKeyDown={(e) => handleUsernameKeyDown(e, username)}
+                onChange={(e) => setUsername(e.target.value)}
               />
               <button
                 className="btn btn--primary btn--settings mg-b-0"
-                disabled={usernameSaveDisabled}
-                onClick={(e) => handleUsernameSave(e, currentUsername)}
+                disabled={!username}
+                onClick={(e) => handleUsernameSave(e, username)}
               >
                 Save
               </button>
@@ -370,7 +341,7 @@ const Settings = (props) => {
                 placeholder="Current Password"
                 value={oldPassword}
                 onKeyDown={(e) => oldPasswordKeyDown(e, oldPassword)}
-                onChange={handleOldPasswordChange}
+                onChange={(e) => setOldPassword(e.target.value)}
               />
             </SettingsField>
 
@@ -387,7 +358,7 @@ const Settings = (props) => {
                 placeholder="New Password"
                 value={password}
                 onKeyDown={(e) => newPasswordKeyDown(e, password)}
-                onChange={handlePasswordChange}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </SettingsField>
 
@@ -404,7 +375,7 @@ const Settings = (props) => {
                 placeholder="Password"
                 value={confirmPassword}
                 onKeyDown={(e) => confirmPasswordKeyDown(e, confirmPassword)}
-                onChange={handleConfirmPasswordChange}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
               <button
                 className="btn btn--primary btn--settings mg-b-0"
@@ -471,8 +442,8 @@ const Settings = (props) => {
         <DeleteAccount
           onSuccess={onSuccess}
           onFailure={onFailure}
-          closeSettings={props.closeSettings}
-          closeDelete={closeDelete}
+          closeSettings={closeSettings}
+          closeDelete={() => setShowDelete(false)}
           auth={auth}
         />
       )}
@@ -487,8 +458,6 @@ Settings.propTypes = {
   onSuccess: PropTypes.func,
   onFailure: PropTypes.func,
   changeAttribute: PropTypes.func,
-  getUserInfo: PropTypes.func,
-  setUserInfo: PropTypes.func,
 };
 
 export default Settings;

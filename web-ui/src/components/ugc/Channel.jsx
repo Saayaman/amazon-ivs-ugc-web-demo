@@ -252,10 +252,14 @@ const Channel = (props) => {
 
   if (streamData.gotStreams) {
     if (isLiveStreaming) {
-      videoPlayerComponent = <VideoPlayer videoStream={videoStream} />;
+      videoPlayerComponent = (
+        <VideoPlayer id="video" videoStream={videoStream} />
+      );
     } else {
       if (checkedAuth) {
-        videoPlayerComponent = <HowToStream isMyChannel={isMyChannel} />;
+        videoPlayerComponent = (
+          <HowToStream id="video" isMyChannel={isMyChannel} />
+        );
       }
     }
   }
@@ -295,13 +299,12 @@ const Channel = (props) => {
   }
 
   return (
+    //id is used for positioning css grid
     <div className="main stream-container">
       <div className="content-wrapper channel-wrapper mg-2">
-        <div className="stream-content-innner">
-          {videoPlayerComponent}
-          <Chat userInfo={userInfo} />
-        </div>
-        <div className="stream-title mg-t-1">
+        {videoPlayerComponent}
+        <Chat id="chat" userInfo={userInfo} handleSignIn={props.handleSignIn} />
+        <div id="streamTitle" className="stream-title mg-t-1">
           {titleComponent}
           <div className="channel-meta pd-t-1">
             {streamData.gotStreams && (

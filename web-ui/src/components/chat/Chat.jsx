@@ -7,7 +7,7 @@ import * as config from "../../config";
 // Styles
 import "./Chat.css";
 
-const Chat = ({ userInfo }) => {
+const Chat = ({ userInfo, handleSignIn, id }) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [connection, setConnection] = useState(null);
@@ -80,14 +80,6 @@ const Chat = ({ userInfo }) => {
             profile: picture,
           },
         });
-
-        console.log("sentdata", data);
-        // const data = `{
-        //   "action": "sendmessage",
-        //   "data": "${userInfo.preferred_username}::${message
-        //   .replace(/\\/g, "\\\\")
-        //   .replace(/"/g, '\\"')}"
-        // }`;
         connection.send(data);
         setMessage("");
       }
@@ -128,30 +120,29 @@ const Chat = ({ userInfo }) => {
   };
 
   return (
-    <div className="col-wrapper">
-      <div className="chat-wrapper pos-absolute pd-t-1 top-0 bottom-0">
+    <div id={id} className="col-wrapper">
+      <div className="chat-wrapper top-0 bottom-0">
         <div className="messages">
           {renderMessages()}
           <div ref={messagesEndRef} />
         </div>
         <div className="composer">
-          <input
-            ref={chatRef}
-            className={`rounded ${
-              !userInfo.preferred_username ? "hidden" : ""
-            }`}
-            type="text"
-            placeholder="Say something"
-            value={message}
-            maxLength={510}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-          />
-          {!userInfo && (
+          {!!userInfo.preferred_username && (
+            <input
+              ref={chatRef}
+              type="text"
+              placeholder="Say something"
+              value={message}
+              maxLength={510}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+            />
+          )}
+          {!userInfo.preferred_username && (
             <fieldset>
               <button
-                onClick={() => console.log("clicked")}
-                className="btn btn--primary full-width rounded"
+                onClick={() => handleSignIn(true)}
+                className="btn full-width"
               >
                 Sign in to send messages
               </button>

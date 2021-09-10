@@ -149,9 +149,15 @@ header {
 }
 
 .stream-container .content-wrapper {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  grid-template-areas: "video chat" "streamTitle streamTitle";
 }
+
+#video { grid-area: video; }
+#streamTitle { grid-area: streamTitle; }
+#chat { grid-area: chat; }
+
 
 .stream-content-innner {
   display: flex;
@@ -276,6 +282,11 @@ header {
 }
 
 @media (max-width: 1080px) {
+  .stream-container .content-wrapper {
+    grid-template-columns: 1fr;
+    grid-template-areas: "video" "streamTitle" "chat";
+  }
+
   .stream-content-innner {
     display: unset;
   }

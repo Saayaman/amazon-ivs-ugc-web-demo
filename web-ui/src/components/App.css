@@ -72,10 +72,6 @@ header {
   align-items: stretch;
 }
 
-.channel-wrapper {
-  max-width: 1280px;
-}
-
 .content-wrapper .my-channel,
 .content-wrapper .sign-in {
   cursor: pointer;
@@ -148,7 +144,20 @@ header {
   outline: none;
 }
 
+.stream-container {
+  max-width: 1280px;
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
+  justify-content: unset;
+}
+
 .stream-container .content-wrapper {
+  width: unset;
+  max-width: 100%;
+
   display: grid;
   grid-template-columns: 1fr 400px;
   grid-template-areas: "video chat" "streamTitle streamTitle";

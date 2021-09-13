@@ -3,6 +3,8 @@
 
 import React, { useEffect, useState, createRef } from "react";
 import * as config from "../../config";
+// import Picker from "emoji-picker-react";
+import Picker from "../picker/Picker";
 
 // Styles
 import "./Chat.css";
@@ -15,7 +17,8 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
   const chatRef = createRef();
   const messagesEndRef = createRef();
 
-  console.log("userInfo", userInfo);
+  const [chosenEmoji, setChosenEmoji] = useState(null);
+  const [openPicker, setOpenPicker] = useState(false);
 
   useEffect(() => {
     const initConnection = async () => {
@@ -119,6 +122,16 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
     });
   };
 
+  console.log("chosenEmoji: ", chosenEmoji);
+
+  const handleSelectEmoji = (emoji) => {
+    setChosenEmoji(emoji);
+    setMessage((prevState) => {
+      return `${prevState}${emoji}`;
+    });
+    setOpenPicker(false);
+  };
+
   return (
     <div id={id} className="col-wrapper">
       <div className="chat-wrapper top-0 bottom-0">
@@ -128,15 +141,28 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
         </div>
         <div className="composer">
           {!!userInfo.preferred_username && (
-            <input
-              ref={chatRef}
-              type="text"
-              placeholder="Say something"
-              value={message}
-              maxLength={510}
-              onChange={handleChange}
-              onKeyDown={handleKeyDown}
-            />
+            <>
+              {openPicker && (
+                // <Picker
+                //   onEmojiClick={(event, emojiObject) =>
+                //     setChosenEmoji(emojiObject)
+                //   }
+                // />
+                <Picker emojiClicked={handleSelectEmoji} />
+              )}
+              <div className="input-wrapper" style={{ display: "flex" }}>
+                <button onClick={() => setOpenPicker(!openPicker)}>😃</button>
+                <input
+                  ref={chatRef}
+                  type="text"
+                  placeholder="Say something"
+                  value={message}
+                  maxLength={510}
+                  onChange={handleChange}
+                  onKeyDown={handleKeyDown}
+                />
+              </div>
+            </>
           )}
           {!userInfo.preferred_username && (
             <fieldset>

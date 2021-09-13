@@ -3,6 +3,10 @@
 
 .col-wrapper {
   margin-left: 8px;
+  width: 400px;
+  flex-shrink: 0;
+  align-self: stretch;
+  position: relative;
 }
 
 .chat-wrapper {
@@ -10,6 +14,8 @@
   flex-direction: column;
   width: inherit;
   height: 100%;
+  position: absolute;
+  /* display: relative; */
 }
 
 .chat-wrapper .messages {
@@ -18,10 +24,10 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   border: 1px solid #4A4A4A;
   border-radius: 9px;
   padding: 14px 12px;
+  /* position: absolute; */
 }
 
 .chat-line {
@@ -49,6 +55,11 @@
 
 .composer {
   padding-top: 8px;
+}
+
+.composer .input-wrapper {
+  background: var(--color-bg-input);
+  border-radius: 8px;
 }
 
 .composer input {

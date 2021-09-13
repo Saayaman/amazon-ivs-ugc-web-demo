@@ -298,39 +298,45 @@ const Channel = (props) => {
     }
   }
 
+  const renderTitle = () => (
+    <div id="streamTitle" className="stream-title mg-t-1">
+      {titleComponent}
+      <div className="channel-meta pd-t-1">
+        {streamData.gotStreams && (
+          <>
+            <img
+              className="channel-meta-avatar"
+              src={channelAvatarUrl}
+              alt={streamData.currentStream.id}
+            />
+            <div className="channel-meta-text">
+              <div className="channel-meta-name">{streamId}</div>
+              {isLive ? (
+                <div className="channel-live">
+                  <span>LIVE</span>
+                  {elapsedStreaming}
+                </div>
+              ) : (
+                <div className="channel-offline">
+                  <span>OFFLINE</span>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+
   return (
     //id is used for positioning css grid
     <div className="main stream-container">
-      <div className="content-wrapper channel-wrapper mg-2">
+      <div className="content-wrapper">
+        {/* <div className="channel-wrapper-inner"> */}
         {videoPlayerComponent}
         <Chat id="chat" userInfo={userInfo} handleSignIn={props.handleSignIn} />
-        <div id="streamTitle" className="stream-title mg-t-1">
-          {titleComponent}
-          <div className="channel-meta pd-t-1">
-            {streamData.gotStreams && (
-              <>
-                <img
-                  className="channel-meta-avatar"
-                  src={channelAvatarUrl}
-                  alt={streamData.currentStream.id}
-                />
-                <div className="channel-meta-text">
-                  <div className="channel-meta-name">{streamId}</div>
-                  {isLive ? (
-                    <div className="channel-live">
-                      <span>LIVE</span>
-                      {elapsedStreaming}
-                    </div>
-                  ) : (
-                    <div className="channel-offline">
-                      <span>OFFLINE</span>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+        {/* </div> */}
+        {renderTitle()}
       </div>
     </div>
   );

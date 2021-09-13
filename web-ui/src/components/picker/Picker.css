@@ -1,0 +1,20 @@
+.dark {
+  width: unset;
+  height: 154px;
+}
+
+.picker .search-row {
+  display: none;
+  height: 0;
+}
+
+.emoji-menu {
+  display: none;
+  height: 0;
+}
+
+emoji-picker {
+  --num-columns: 10;
+  --emoji-size: 2.4rem;
+  --background: #454545;
+}

@@ -32,7 +32,14 @@
 
 .chat-line {
   display: flex;
-  margin-top: 1.8rem;
+  margin-top: 0.6rem;
+  margin-bottom: 0.6rem;
+  font-size: 1.4rem;
+}
+
+.chat-line p {
+  line-height: 2rem;
+  font-weight: 300;
 }
 
 .chat-line .username {
@@ -60,24 +67,36 @@
 .composer .input-wrapper {
   background: var(--color-bg-input);
   border-radius: 8px;
+  /* padding-top: 0.3rem;
+  padding-bottom: 0.3rem; */
+  padding: 0.3rem 0.6rem;
+}
+
+.composer .input-wrapper button {
+  
 }
 
 .composer input {
   width: 100%;
   border-radius: 8px;
+  padding: 0 6px 0 6px;
 }
 
-.composer button.btn {
+.composer input:focus {
+  border: none;
+}
+
+.composer .input-button {
+  background-color: unset;
+}
+
+button.signIn{
   margin-bottom: 0;
-  background: #FFE249;
+  background: #FFE249 !important;
   color: var(--color-text-inverted);
   height: 4.8rem;
   border-radius: 0.8rem;
-}
-
-.btn:disabled {
-  opacity: .5;
-  background: var(--color-bg-button-primary-default);
+  font-weight: 700;
 }
 
 @media (max-width: 1080px) {

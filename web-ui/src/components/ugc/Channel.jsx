@@ -331,7 +331,7 @@ const Channel = (props) => {
   return (
     //id is used for positioning css grid
     <div className="main stream-container">
-      <div className="content-wrapper">
+      <div className="contents-wrapper">
         {/* <div className="channel-wrapper-inner"> */}
         {videoPlayerComponent}
         <Chat id="chat" userInfo={userInfo} handleSignIn={props.handleSignIn} />

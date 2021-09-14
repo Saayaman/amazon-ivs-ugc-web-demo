@@ -63,7 +63,7 @@ header {
   justify-content: center;
 }
 
-.content-wrapper {
+.contents-wrapper {
   max-width: var(--section-max-width);
   width: 100%;
   display: flex;
@@ -72,8 +72,8 @@ header {
   align-items: stretch;
 }
 
-.content-wrapper .my-channel,
-.content-wrapper .sign-in {
+.contents-wrapper .my-channel,
+.contents-wrapper .sign-in {
   cursor: pointer;
   color: var(--color-light-blue);
   text-decoration: underline;
@@ -151,10 +151,11 @@ header {
   margin: 0 auto;
   padding-left: 20px;
   padding-right: 20px;
+  padding-bottom: var(--header-height);
   justify-content: unset;
 }
 
-.stream-container .content-wrapper {
+.stream-container .contents-wrapper {
   width: unset;
   max-width: 100%;
 
@@ -291,7 +292,7 @@ header {
 }
 
 @media (max-width: 1080px) {
-  .stream-container .content-wrapper {
+  .stream-container .contents-wrapper {
     grid-template-columns: 1fr;
     grid-template-areas: "video" "streamTitle" "chat";
   }

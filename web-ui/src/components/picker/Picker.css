@@ -1,11 +1,20 @@
 .dark {
   width: unset;
   height: 154px;
+  margin-bottom: 0.8rem;
 }
 
-.picker .search-row {
+.picker > .search-row {
   display: none;
   height: 0;
+}
+
+.dark .search-row {
+  display: none !important;
+}
+
+.favorites {
+  display: none;
 }
 
 .emoji-menu {
@@ -17,4 +26,42 @@ emoji-picker {
   --num-columns: 10;
   --emoji-size: 2.4rem;
   --background: #454545;
+}
+
+
+aside.emoji-picker-react {
+  background: #525252 !important;
+  box-shadow: unset !important;
+  border: none !important;
+  height: 150px !important;
+  margin-bottom: 8px !important;
+  border-radius: 8px !important;
+}
+
+.emoji-picker-react .emoji-group:before {
+  background-color: unset !important;
+  display: none !important;
+}
+.emoji-picker-react input.emoji-search {
+  display: none;
+}
+
+.emoji-picker-react .emoji-group {
+  padding: 1.4rem 1.4rem !important;
+}
+
+.emoji-picker-react .emoji-group[data-display-name="Recently Used"] {
+  display: none;
+}
+
+aside.emoji-picker-react .content-wrapper::before {
+  display: unset !important;
+}
+
+.emoji-picker-react .emoji-categories {
+  display: none !important;
+}
+
+.emoji-picker-react ul.skin-tones-list {
+  display: none !important;
 }

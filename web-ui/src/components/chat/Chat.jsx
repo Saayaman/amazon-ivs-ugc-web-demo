@@ -1,9 +1,8 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import React, { useEffect, useState, createRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import * as config from "../../config";
-// import Picker from "emoji-picker-react";
 import Picker from "../picker/Picker";
 
 // Styles
@@ -14,10 +13,8 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
   const [messages, setMessages] = useState([]);
   const [connection, setConnection] = useState(null);
 
-  const chatRef = createRef();
-  const messagesEndRef = createRef();
+  const messagesEndRef = useRef(null);
 
-  const [chosenEmoji, setChosenEmoji] = useState(null);
   const [openPicker, setOpenPicker] = useState(false);
 
   useEffect(() => {
@@ -36,6 +33,7 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
       };
 
       connectionInit.onmessage = (event) => {
+        console.log("onMessage!");
         // append received message from the server to the DOM element
         const data = JSON.parse(event.data);
         const { metadata } = data;
@@ -61,6 +59,7 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
   useEffect(() => {
     const scrollToBottom = () => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      // messagesEndRef.current.scrollToBottom({ behavior: "smooth" });
     };
     scrollToBottom();
   });
@@ -69,23 +68,27 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
     setMessage(e.target.value);
   };
 
+  const sendMessage = () => {
+    if (message) {
+      const { profile, preferred_username, picture } = userInfo;
+      const data = JSON.stringify({
+        action: "sendmessage",
+        data: message,
+        username: preferred_username,
+        metadata: {
+          test: profile.bgColor,
+          profile: picture,
+        },
+      });
+      connection.send(data);
+      setMessage("");
+    }
+  };
+
   const handleKeyDown = (e) => {
     if (e.keyCode === 13) {
       // keyCode 13 is carriage return
-      if (message) {
-        const { profile, preferred_username, picture } = userInfo;
-        const data = JSON.stringify({
-          action: "sendmessage",
-          data: message,
-          username: preferred_username,
-          metadata: {
-            test: profile.bgColor,
-            profile: picture,
-          },
-        });
-        connection.send(data);
-        setMessage("");
-      }
+      sendMessage();
     }
   };
 
@@ -122,15 +125,23 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
     });
   };
 
-  console.log("chosenEmoji: ", chosenEmoji);
-
-  const handleSelectEmoji = (emoji) => {
-    setChosenEmoji(emoji);
+  //react-emoji-picker
+  const handleSelectEmoji = (event, emojiObject) => {
+    console.log("emojiobject", emojiObject);
     setMessage((prevState) => {
-      return `${prevState}${emoji}`;
+      return `${prevState}${emojiObject.emoji}`;
     });
     setOpenPicker(false);
   };
+
+  //react-emoji-element
+  // const handleSelectEmoji = (emoji) => {
+  //   setChosenEmoji(emoji);
+  //   setMessage((prevState) => {
+  //     return `${prevState}${emoji}`;
+  //   });
+  //   setOpenPicker(false);
+  // };
 
   return (
     <div id={id} className="col-wrapper">
@@ -151,28 +162,33 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
                 <Picker emojiClicked={handleSelectEmoji} />
               )}
               <div className="input-wrapper" style={{ display: "flex" }}>
-                <button onClick={() => setOpenPicker(!openPicker)}>😃</button>
+                <button
+                  className="input-button"
+                  onClick={() => setOpenPicker(!openPicker)}
+                >
+                  😃
+                </button>
                 <input
-                  ref={chatRef}
                   type="text"
-                  placeholder="Say something"
+                  placeholder="Type a message..."
                   value={message}
                   maxLength={510}
                   onChange={handleChange}
                   onKeyDown={handleKeyDown}
                 />
+                <button className="input-button" onClick={sendMessage}>
+                  <img src="/images/send.svg" />
+                </button>
               </div>
             </>
           )}
           {!userInfo.preferred_username && (
-            <fieldset>
-              <button
-                onClick={() => handleSignIn(true)}
-                className="btn full-width"
-              >
-                Sign in to send messages
-              </button>
-            </fieldset>
+            <button
+              onClick={() => handleSignIn(true)}
+              className="signIn full-width"
+            >
+              Sign in to chat
+            </button>
           )}
         </div>
       </div>

@@ -1,0 +1,29 @@
+
+
+.chat-settings .settings-field { 
+  align-items: flex-start;
+}
+
+.chat-settings .settings-input-group {
+  display: block;
+}
+
+.settings-block-list {
+  background-color: #2D2D2D;
+  padding-left: 1.4rem;
+  padding-right: 1.4rem;
+}
+
+.settings-block-list input {
+  padding: 0;
+  border: none;
+  border-bottom: 1px solid #4A4A4A;
+  background: none;
+  border-radius: 0;
+  margin-bottom: unset;
+  height: 5.2rem;
+}
+
+.settings-block-list input:last-child {
+  border-bottom: unset;
+}

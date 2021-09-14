@@ -106,7 +106,6 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
   };
 
   const renderMessages = () => {
-    console.log("messages", messages);
     return messages.map((msg) => {
       let formattedMessage = parseUrls(msg.message);
       return (
@@ -134,34 +133,22 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
     setOpenPicker(false);
   };
 
-  //react-emoji-element
-  // const handleSelectEmoji = (emoji) => {
-  //   setChosenEmoji(emoji);
-  //   setMessage((prevState) => {
-  //     return `${prevState}${emoji}`;
-  //   });
-  //   setOpenPicker(false);
-  // };
-
   return (
     <div id={id} className="col-wrapper">
       <div className="chat-wrapper top-0 bottom-0">
-        <div className="messages">
+        <div
+          className={`messages ${
+            !userInfo.preferred_username && "messages-before-signIn"
+          }`}
+        >
           {renderMessages()}
           <div ref={messagesEndRef} />
         </div>
         <div className="composer">
           {!!userInfo.preferred_username && (
             <>
-              {openPicker && (
-                // <Picker
-                //   onEmojiClick={(event, emojiObject) =>
-                //     setChosenEmoji(emojiObject)
-                //   }
-                // />
-                <Picker emojiClicked={handleSelectEmoji} />
-              )}
-              <div className="input-wrapper" style={{ display: "flex" }}>
+              {openPicker && <Picker emojiClicked={handleSelectEmoji} />}
+              <div className="input-wrapper">
                 <button
                   className="input-button"
                   onClick={() => setOpenPicker(!openPicker)}

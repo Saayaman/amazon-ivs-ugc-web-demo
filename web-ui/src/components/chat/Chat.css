@@ -15,7 +15,6 @@
   width: inherit;
   height: 100%;
   position: absolute;
-  /* display: relative; */
 }
 
 .chat-wrapper .messages {
@@ -27,7 +26,6 @@
   border: 1px solid #4A4A4A;
   border-radius: 9px;
   padding: 14px 12px;
-  /* position: absolute; */
 }
 
 .chat-line {
@@ -65,15 +63,10 @@
 }
 
 .composer .input-wrapper {
+  display: flex;
   background: var(--color-bg-input);
   border-radius: 8px;
-  /* padding-top: 0.3rem;
-  padding-bottom: 0.3rem; */
   padding: 0.3rem 0.6rem;
-}
-
-.composer .input-wrapper button {
-  
 }
 
 .composer input {
@@ -106,4 +99,9 @@ button.signIn{
     margin-left: unset;
     margin-top: 24px;
   }
+
+  .messages-before-signIn.messages {
+    display: none;
+  }
+
 }

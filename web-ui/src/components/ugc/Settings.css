@@ -19,6 +19,35 @@
   max-width: var(--section-max-width);
 }
 
+.settings-tabs{
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.settings-tabs button {
+  background: none;
+  color: white;
+  padding: 0px;
+  border-radius: 0;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  opacity: 0.7;
+}
+
+.settings-tabs button:hover {
+  transition: 0.2s opacity ease;
+  opacity: 1;
+}
+
+.settings-tabs button.selected {
+  border-bottom: 2px solid #FFE249;
+  color: white;
+  opacity: 1;
+}
+
+
 .settings-field {
   display: grid;
   grid-template-columns: var(--settings-field-grid-template);

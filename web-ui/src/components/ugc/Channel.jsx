@@ -95,7 +95,6 @@ const Channel = (props) => {
         setMultipleStates(currentS);
         if (currentS[0].isLive === "No") {
           // If we're not live, get the stream info again after a short timeout
-          console.log(`USERNAME: ${username}`);
           streamTimeoutID.current = setTimeout(() => {
             getAndSetStreamInfo(username);
           }, 5000);

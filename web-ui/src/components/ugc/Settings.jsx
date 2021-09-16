@@ -1,21 +1,18 @@
 import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
-import * as util from "../util";
 
 // Components
-import DeleteAccount from "./modals/DeleteAccount";
-import PasswordReq from "../common/PasswordReq";
-import Avatars from "../common/Avatars";
-import BgColor from "../common/BgColor";
-import SettingsField from "./SettingsField";
-
-// Styles
-import "./Settings.css";
 import StreamSettings from "./StreamSettings";
 import ChatSettings from "./ChatSettings";
 
+// Styles
+import "./Settings.css";
+
 const Settings = (props) => {
-  const [currentTab, setCurrentTab] = useState("stream");
+  const STREAM = "stream";
+  const CHAT = "chat";
+  const [currentTab, setCurrentTab] = useState(STREAM);
+
   return (
     <div className="main full-width full-height">
       <div className="settings-wrapper mg-2">
@@ -23,19 +20,19 @@ const Settings = (props) => {
 
         <div className="settings-tabs">
           <button
-            className={currentTab === "stream" && "selected"}
-            onClick={() => setCurrentTab("stream")}
+            className={currentTab === STREAM && "selected"}
+            onClick={() => setCurrentTab(STREAM)}
           >
             Live stream
           </button>
           <button
-            className={currentTab === "chat" && "selected"}
-            onClick={() => setCurrentTab("chat")}
+            className={currentTab === CHAT && "selected"}
+            onClick={() => setCurrentTab(CHAT)}
           >
             Chat room
           </button>
         </div>
-        {currentTab === "stream" ? (
+        {currentTab === STREAM ? (
           <StreamSettings {...props} />
         ) : (
           <ChatSettings {...props} />

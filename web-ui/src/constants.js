@@ -108,3 +108,8 @@ export const COLOR_LIST = [
     color: "#BBB8FF",
   },
 ];
+
+export const BLOCKED_TYPES = {
+  CHATTER: "chatter",
+  WORD: "word",
+};

@@ -20,13 +20,13 @@ const Settings = (props) => {
 
         <div className="settings-tabs">
           <button
-            className={currentTab === STREAM && "selected"}
+            className={currentTab === STREAM ? "selected" : ""}
             onClick={() => setCurrentTab(STREAM)}
           >
             Live stream
           </button>
           <button
-            className={currentTab === CHAT && "selected"}
+            className={currentTab === CHAT ? "selected" : ""}
             onClick={() => setCurrentTab(CHAT)}
           >
             Chat room

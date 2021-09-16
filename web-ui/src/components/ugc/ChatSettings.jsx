@@ -5,18 +5,18 @@ import {
   SET_BLOCKED_CHATTERS,
   SET_BLOCKED_WORDS,
 } from "../../context/SettingsProvider";
+import { BLOCKED_TYPES } from "../../constants";
 import "./ChatSettings.css";
 
 const ChatSettings = () => {
+  const { CHATTER, WORD } = BLOCKED_TYPES;
   const [state, dispatch] = useContext(SettingsContext);
 
   const [blockedWords, setBlockedWords] = useState(state.blockedWords);
   const [blockedChatters, setBlockedChatters] = useState(state.blockedChatters);
 
-  const [newBlockedWord, setNewBlockedWord] = useState(null);
-  const [newBlockedChatter, setNewBlockedChatter] = useState(null);
-
-  const [timer, setTimer] = useState(null);
+  const [newBlockedWord, setNewBlockedWord] = useState("");
+  const [newBlockedChatter, setNewBlockedChatter] = useState("");
 
   const blockedWordRef = useRef(null);
   const blockedChatterRef = useRef(null);
@@ -27,51 +27,47 @@ const ChatSettings = () => {
   }, [state]);
 
   useEffect(() => {
-    blockedChatterRef.current.scrollIntoView({ behavior: "smooth" });
-    blockedWordRef.current.scrollIntoView({ behavior: "smooth" });
-  });
+    scrollToBottom();
+  }, []);
 
-  const handleDispatch = (inputValue, type) => {};
+  const scrollToBottom = () => {
+    blockedWordRef.current.scrollTop =
+      blockedWordRef.current.scrollHeight - blockedWordRef.current.clientHeight;
 
-  const changeDelay = (inputValue, type) => {
-    if (timer) {
-      clearTimeout(timer);
-      setTimer(null);
-    }
-    setTimer(
-      setTimeout(() => {
-        handleDispatch(inputValue, type);
-      }, 700)
-    );
+    blockedChatterRef.current.scrollTop =
+      blockedChatterRef.current.scrollHeight -
+      blockedChatterRef.current.clientHeight;
   };
 
-  console.log("state, blocked chatters", state, blockedChatters);
-  // useEffect(() => {
-  //   const timeoutId = setTimeout(() => {
-  //     if (!newBlockedWord) {
-  //       dispatch({
-  //         type: SET_BLOCKED_WORDS,
-  //         blockedWords: [...blockedWords, newBlockedWord],
-  //       });
-  //       setNewBlockedWord("");
-  //     }
-  //   }, 1000);
-  //   return () => clearTimeout(timeoutId);
-  // }, [newBlockedWord]);
+  function loadSettings(type) {
+    return new Promise((resolve, reject) => {
+      let wait = setTimeout(() => {
+        if (type === WORD) {
+          dispatch({
+            type: SET_BLOCKED_WORDS,
+            blockedWords: [...blockedWords, newBlockedWord],
+          });
+        } else {
+          dispatch({
+            type: SET_BLOCKED_CHATTERS,
+            blockedChatters: [...blockedChatters, newBlockedChatter],
+          });
+        }
+        clearTimeout(wait);
+        resolve("load settings done");
+      }, 200);
+    });
+  }
 
-  const handleKeyDownWord = (e) => {
-    if (e.keyCode === 13 && newBlockedWord) {
-      // keyCode 13 is carriage return
-      dispatch({
-        type: SET_BLOCKED_WORDS,
-        blockedWords: [...blockedWords, newBlockedWord],
-      });
-      setNewBlockedWord("");
+  const handleKeyDownUpdate = async (e, type) => {
+    if (e.keyCode === 13) {
+      await loadSettings(type);
+      type === WORD ? setNewBlockedWord("") : setNewBlockedChatter("");
+      scrollToBottom();
     }
   };
 
   const handleKeyDownChatter = (e) => {
-    console.log("newBLockedChatter", newBlockedChatter);
     if (e.keyCode === 13 && newBlockedChatter) {
       dispatch({
         type: SET_BLOCKED_CHATTERS,
@@ -82,12 +78,17 @@ const ChatSettings = () => {
   };
 
   const handleKeyDown = (e) => {
-    console.log("handleKeyDown!!!!!");
+    if (e.keyCode === 13) {
+      dispatch({
+        type: SET_BLOCKED_CHATTERS,
+        blockedChatters: blockedChatters,
+      });
+      dispatch({ type: SET_BLOCKED_WORDS, blockedWords: blockedWords });
+    }
   };
 
   const handleChangeArray = (e, type, index) => {
-    console.log("handleArrayChange", type);
-    if (type === "WORD") {
+    if (type === WORD) {
       setBlockedWords((prevState) => {
         let newArr = prevState;
         newArr[index] = e.target.value;
@@ -95,7 +96,7 @@ const ChatSettings = () => {
       });
     }
 
-    if (type === "CHATTER") {
+    if (type === CHATTER) {
       setBlockedChatters((prevState) => {
         let newArr = prevState;
         newArr[index] = e.target.value;
@@ -111,15 +112,14 @@ const ChatSettings = () => {
         inputId="blocked-words-id"
         className="mg-b-1"
       >
-        <div className="settings-block-list">
+        <div className="settings-block-list" ref={blockedWordRef}>
           {blockedWords.map((value, index) => (
             <input
               key={index}
               value={value}
               type="text"
               placeholder="Type a word to block"
-              onChange={(e) => handleChangeArray(e, "WORD", index)}
-              onKeyUp={() => console.log("Key UP!")}
+              onChange={(e) => handleChangeArray(e, WORD, index)}
               onKeyDown={handleKeyDown}
             />
           ))}
@@ -127,10 +127,9 @@ const ChatSettings = () => {
             key="newBlockedWord"
             value={newBlockedWord}
             onChange={(e) => setNewBlockedWord(e.target.value)}
-            onKeyDown={handleKeyDownWord}
+            onKeyDown={(e) => handleKeyDownUpdate(e, WORD)}
             type="text"
             placeholder="Type a word to block"
-            ref={blockedWordRef}
           />
         </div>
         <p>
@@ -144,14 +143,14 @@ const ChatSettings = () => {
         inputId="banned-chatters-id"
         className="mg-b-1"
       >
-        <div className="settings-block-list">
+        <div className="settings-block-list" ref={blockedChatterRef}>
           {blockedChatters.map((value, index) => (
             <input
               key={index}
               value={value}
               type="text"
               placeholder="Type a username to ban"
-              onChange={(e) => handleChangeArray(e, "CHATTER", index)}
+              onChange={(e) => handleChangeArray(e, CHATTER, index)}
               onKeyDown={handleKeyDown}
             />
           ))}
@@ -159,10 +158,9 @@ const ChatSettings = () => {
             key="newBlockedChatter"
             value={newBlockedChatter}
             onChange={(e) => setNewBlockedChatter(e.target.value)}
-            onKeyDown={handleKeyDownChatter}
+            onKeyDown={(e) => handleKeyDownUpdate(e, CHATTER)}
             type="text"
             placeholder="Type a username to ban"
-            ref={blockedChatterRef}
           />
         </div>
         <p>

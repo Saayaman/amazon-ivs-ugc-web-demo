@@ -21,6 +21,7 @@ const ChatSettings = () => {
   const blockedWordRef = useRef(null);
   const blockedChatterRef = useRef(null);
 
+  const [showCloseIcon, setShowCloseIcon] = useState("");
   useEffect(() => {
     setBlockedChatters(state.blockedChatters);
     setBlockedWords(state.blockedWords);
@@ -61,24 +62,18 @@ const ChatSettings = () => {
 
   const handleKeyDownUpdate = async (e, type) => {
     if (e.keyCode === 13) {
-      await loadSettings(type);
-      type === WORD ? setNewBlockedWord("") : setNewBlockedChatter("");
-      scrollToBottom();
-    }
-  };
-
-  const handleKeyDownChatter = (e) => {
-    if (e.keyCode === 13 && newBlockedChatter) {
-      dispatch({
-        type: SET_BLOCKED_CHATTERS,
-        blockedChatters: [...blockedChatters, newBlockedChatter],
-      });
-      setNewBlockedChatter("");
+      if (!!newBlockedChatter || !!newBlockedWord) {
+        await loadSettings(type);
+        type === WORD ? setNewBlockedWord("") : setNewBlockedChatter("");
+        scrollToBottom();
+      } else {
+      }
     }
   };
 
   const handleKeyDown = (e) => {
     if (e.keyCode === 13) {
+      setShowCloseIcon(null);
       dispatch({
         type: SET_BLOCKED_CHATTERS,
         blockedChatters: blockedChatters,
@@ -105,6 +100,23 @@ const ChatSettings = () => {
     }
   };
 
+  const deleteLine = (type, index) => {
+    if (type === WORD) {
+      let newArr = blockedWords;
+      newArr.splice(index, 1);
+      dispatch({ type: SET_BLOCKED_WORDS, blockedWords: newArr });
+    }
+
+    if (type === CHATTER) {
+      let newArr = blockedChatters;
+      newArr.splice(index, 1);
+      dispatch({
+        type: SET_BLOCKED_CHATTERS,
+        blockedChatters: newArr,
+      });
+    }
+  };
+
   return (
     <fieldset className="chat-settings">
       <SettingsField
@@ -114,14 +126,25 @@ const ChatSettings = () => {
       >
         <div className="settings-block-list" ref={blockedWordRef}>
           {blockedWords.map((value, index) => (
-            <input
-              key={index}
-              value={value}
-              type="text"
-              placeholder="Type a word to block"
-              onChange={(e) => handleChangeArray(e, WORD, index)}
-              onKeyDown={handleKeyDown}
-            />
+            <div className="settings-block-item" key={index}>
+              <input
+                value={value}
+                type="text"
+                placeholder="Type a word to block"
+                onChange={(e) => handleChangeArray(e, WORD, index)}
+                onKeyDown={handleKeyDown}
+                onMouseEnter={() => setShowCloseIcon(`WORD-${index}`)}
+                // onMouseLeave={() => setShowCloseIcon("")}
+              />
+              {showCloseIcon === `WORD-${index}` && (
+                <div
+                  className="settings-unblock-icon"
+                  onClick={() => deleteLine(WORD, index)}
+                >
+                  <img src="/icons/cross_icon.svg" />
+                </div>
+              )}
+            </div>
           ))}
           <input
             key="newBlockedWord"
@@ -130,6 +153,7 @@ const ChatSettings = () => {
             onKeyDown={(e) => handleKeyDownUpdate(e, WORD)}
             type="text"
             placeholder="Type a word to block"
+            onFocus={() => setShowCloseIcon(null)}
           />
         </div>
         <p>
@@ -145,14 +169,26 @@ const ChatSettings = () => {
       >
         <div className="settings-block-list" ref={blockedChatterRef}>
           {blockedChatters.map((value, index) => (
-            <input
-              key={index}
-              value={value}
-              type="text"
-              placeholder="Type a username to ban"
-              onChange={(e) => handleChangeArray(e, CHATTER, index)}
-              onKeyDown={handleKeyDown}
-            />
+            <div className="settings-block-item" key={index}>
+              <input
+                key={index}
+                value={value}
+                type="text"
+                placeholder="Type a username to ban"
+                onChange={(e) => handleChangeArray(e, CHATTER, index)}
+                onKeyDown={handleKeyDown}
+                onMouseEnter={() => setShowCloseIcon(`CHATTER-${index}`)}
+                // onMouseLeave={() => setShowCloseIcon("")}
+              />
+              {showCloseIcon === `CHATTER-${index}` && (
+                <div
+                  className="settings-unblock-icon"
+                  onClick={() => deleteLine(CHATTER, index)}
+                >
+                  <img src="/icons/cross_icon.svg" />
+                </div>
+              )}
+            </div>
           ))}
           <input
             key="newBlockedChatter"
@@ -161,6 +197,7 @@ const ChatSettings = () => {
             onKeyDown={(e) => handleKeyDownUpdate(e, CHATTER)}
             type="text"
             placeholder="Type a username to ban"
+            onFocus={() => setShowCloseIcon(null)}
           />
         </div>
         <p>

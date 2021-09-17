@@ -23,10 +23,15 @@
   border-radius: 0.6rem;
 }
 
+.settings-block-item {
+  position: relative;
+  border-bottom: 1px solid #4A4A4A;
+}
+
 .settings-block-list input {
   padding: 0;
   border: none;
-  border-bottom: 1px solid #4A4A4A;
+  /* border-bottom: 1px solid #4A4A4A; */
   background: none;
   border-radius: 0;
   margin-bottom: unset;
@@ -35,4 +40,13 @@
 
 .settings-block-list input:last-child {
   border-bottom: unset;
+}
+
+.settings-unblock-icon {
+  width: 2.4rem;
+  height: 2.4rem;
+  position: absolute;
+  right: 0;
+  top: 1.6rem;
+  cursor: pointer;
 }

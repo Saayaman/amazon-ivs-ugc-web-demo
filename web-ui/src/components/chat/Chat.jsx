@@ -33,7 +33,6 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
       };
 
       connectionInit.onmessage = (event) => {
-        console.log("onMessage!");
         // append received message from the server to the DOM element
         const data = JSON.parse(event.data);
         const { metadata } = data;
@@ -126,7 +125,6 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
 
   //react-emoji-picker
   const handleSelectEmoji = (event, emojiObject) => {
-    console.log("emojiobject", emojiObject);
     setMessage((prevState) => {
       return `${prevState}${emojiObject.emoji}`;
     });
@@ -141,8 +139,10 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
             !userInfo.preferred_username && "messages-before-signIn"
           }`}
         >
-          {renderMessages()}
-          <div ref={messagesEndRef} />
+          <div className="messages-inner">
+            {renderMessages()}
+            <div ref={messagesEndRef} />
+          </div>
         </div>
         <div className="composer">
           {!!userInfo.preferred_username && (
@@ -153,7 +153,7 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
                   className="input-button"
                   onClick={() => setOpenPicker(!openPicker)}
                 >
-                  😃
+                  <img src="/icons/smily.svg" />
                 </button>
                 <input
                   type="text"
@@ -164,7 +164,7 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
                   onKeyDown={handleKeyDown}
                 />
                 <button className="input-button" onClick={sendMessage}>
-                  <img src="/images/send.svg" />
+                  <img src="/icons/send.svg" />
                 </button>
               </div>
             </>

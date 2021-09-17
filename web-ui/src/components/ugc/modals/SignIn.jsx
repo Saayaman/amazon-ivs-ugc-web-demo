@@ -102,7 +102,7 @@ const SignIn = (props) => {
     <div className="modal pos-absolute top-0 bottom-0">
       <div className="modal__el modal__el--full-height">
         <div className="modal_icon" onClick={props.closeSignIn}>
-          <img src="/images/close_icon.svg" />
+          <img src="/icons/close_icon.svg" />
         </div>
         <div className="justify-center-wrapper">
           <h2 className="mg-b-2">Sign in</h2>

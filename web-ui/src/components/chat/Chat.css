@@ -23,6 +23,7 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  justify-content: end;
   border: 1px solid #4A4A4A;
   border-radius: 9px;
   padding: 14px 12px;

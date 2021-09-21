@@ -161,12 +161,14 @@ header {
 
   display: grid;
   grid-template-columns: 1fr 400px;
-  grid-template-areas: "video chat" "streamTitle streamTitle";
+  grid-template-areas: "video chat" "streamTitle emptyBox";
+  grid-gap: 8px;
 }
 
 #video { grid-area: video; }
 #streamTitle { grid-area: streamTitle; }
 #chat { grid-area: chat; }
+#emptyBox { grid-area: emptyBox;}
 
 
 .stream-content-innner {

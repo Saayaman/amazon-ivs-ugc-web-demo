@@ -1,9 +1,9 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
-
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import * as config from "../../config";
 import Picker from "../picker/Picker";
+import SettingsContext from "../../context/SettingsContext";
 
 // Styles
 import "./Chat.css";
@@ -12,10 +12,12 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [connection, setConnection] = useState(null);
-
-  const messagesEndRef = useRef(null);
-
   const [openPicker, setOpenPicker] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const messagesEndRef = useRef(null);
+  const [state, dispatch] = useContext(SettingsContext);
+
+  const { blockedWords, blockedChatters } = state;
 
   useEffect(() => {
     const initConnection = async () => {
@@ -26,6 +28,7 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
 
       connectionInit.onclose = (event) => {
         console.log("WebSocket is now closed.");
+        initConnection();
       };
 
       connectionInit.onerror = (event) => {
@@ -58,7 +61,6 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
   useEffect(() => {
     const scrollToBottom = () => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-      // messagesEndRef.current.scrollToBottom({ behavior: "smooth" });
     };
     scrollToBottom();
   });
@@ -105,8 +107,25 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
   };
 
   const renderMessages = () => {
-    return messages.map((msg) => {
+    let seconds = null;
+    let isSameUser = false;
+    return messages.map((msg, index) => {
       let formattedMessage = parseUrls(msg.message);
+      if (index > 0) {
+        const difference = msg.timestamp - messages[index - 1].timestamp;
+        const date = new Date(difference);
+        seconds = date.getSeconds();
+        isSameUser = msg.username === messages[index - 1].username;
+      }
+
+      if (seconds !== null && seconds < 30 && isSameUser) {
+        return (
+          <div className="chat-line" key={msg.timestamp} style={{ margin: 0 }}>
+            <div className="chat-avatar-wrapper">&nbsp;</div>
+            <p dangerouslySetInnerHTML={{ __html: formattedMessage }} />
+          </div>
+        );
+      }
       return (
         <div className="chat-line" key={msg.timestamp}>
           <div className="chat-avatar-wrapper">
@@ -148,6 +167,7 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
           {!!userInfo.preferred_username && (
             <>
               {openPicker && <Picker emojiClicked={handleSelectEmoji} />}
+              {!!errorMsg && <div>{errorMsg}</div>}
               <div className="input-wrapper">
                 <button
                   className="input-button"

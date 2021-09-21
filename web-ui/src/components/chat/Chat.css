@@ -22,7 +22,7 @@
   width: 100%;
   overflow-y: auto;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   justify-content: end;
   border: 1px solid #4A4A4A;
   border-radius: 9px;
@@ -31,8 +31,7 @@
 
 .chat-line {
   display: flex;
-  margin-top: 0.6rem;
-  margin-bottom: 0.6rem;
+  margin-top: 1.6rem;
   font-size: 1.4rem;
 }
 
@@ -67,13 +66,18 @@
   display: flex;
   background: var(--color-bg-input);
   border-radius: 8px;
-  padding: 0.3rem 0.6rem;
+  align-items: center;
+  padding-left: 12px;
+  padding-right: 12px;
+  height: 4.8rem;
 }
 
 .composer input {
+  border: none;
   width: 100%;
   border-radius: 8px;
-  padding: 0 6px 0 6px;
+  /* padding: 0 6px 0 6px; */
+  height: 4.8rem;
 }
 
 .composer input:focus {
@@ -82,6 +86,14 @@
 
 .composer .input-button {
   background-color: unset;
+  padding: 0 !important;
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+.composer .input-button img {
+  width: 100%;
+  height: 100%;
 }
 
 button.signIn{

@@ -268,29 +268,25 @@ const Channel = (props) => {
   if (streamData.gotStreams) {
     if (isMyChannel) {
       titleComponent = (
-        <>
-          <fieldset>
-            <div className="stream-title-field">
-              <input
-                type="text"
-                placeholder="Stream Title"
-                className="pd-t-1 stream-title-input"
-                value={currentStreamTitle}
-                onKeyDown={(e) =>
-                  handleStreamTitleKeyDown(e, currentStreamTitle)
-                }
-                onChange={handleMyStreamTitleChange}
-              />
-              <button
-                className="stream-title-button"
-                disabled={saveStreamTitleDisabled}
-                onClick={handleMyStreamTitleClick}
-              >
-                Save
-              </button>
-            </div>
-          </fieldset>
-        </>
+        <fieldset>
+          <div className="stream-title-field">
+            <input
+              type="text"
+              placeholder="Stream Title"
+              className="pd-t-1 stream-title-input"
+              value={currentStreamTitle}
+              onKeyDown={(e) => handleStreamTitleKeyDown(e, currentStreamTitle)}
+              onChange={handleMyStreamTitleChange}
+            />
+            <button
+              className="stream-title-button"
+              disabled={saveStreamTitleDisabled}
+              onClick={handleMyStreamTitleClick}
+            >
+              Save
+            </button>
+          </div>
+        </fieldset>
       );
     } else {
       titleComponent = <h4>{streamData.currentStream.channelName}</h4>;
@@ -336,6 +332,7 @@ const Channel = (props) => {
         <Chat id="chat" userInfo={userInfo} handleSignIn={props.handleSignIn} />
         {/* </div> */}
         {renderTitle()}
+        <div id="emptyBox"></div>
       </div>
     </div>
   );

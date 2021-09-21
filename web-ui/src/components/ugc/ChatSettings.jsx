@@ -11,17 +11,14 @@ import "./ChatSettings.css";
 const ChatSettings = () => {
   const { CHATTER, WORD } = BLOCKED_TYPES;
   const [state, dispatch] = useContext(SettingsContext);
-
+  const [showCloseIcon, setShowCloseIcon] = useState("");
   const [blockedWords, setBlockedWords] = useState(state.blockedWords);
   const [blockedChatters, setBlockedChatters] = useState(state.blockedChatters);
-
   const [newBlockedWord, setNewBlockedWord] = useState("");
   const [newBlockedChatter, setNewBlockedChatter] = useState("");
-
   const blockedWordRef = useRef(null);
   const blockedChatterRef = useRef(null);
 
-  const [showCloseIcon, setShowCloseIcon] = useState("");
   useEffect(() => {
     setBlockedChatters(state.blockedChatters);
     setBlockedWords(state.blockedWords);
@@ -60,7 +57,7 @@ const ChatSettings = () => {
     });
   }
 
-  const handleKeyDownUpdate = async (e, type) => {
+  const handleKeyDownNew = async (e, type) => {
     if (e.keyCode === 13) {
       if (!!newBlockedChatter || !!newBlockedWord) {
         await loadSettings(type);
@@ -71,14 +68,19 @@ const ChatSettings = () => {
     }
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDownUpdate = (e, type, index) => {
     if (e.keyCode === 13) {
       setShowCloseIcon(null);
-      dispatch({
-        type: SET_BLOCKED_CHATTERS,
-        blockedChatters: blockedChatters,
-      });
-      dispatch({ type: SET_BLOCKED_WORDS, blockedWords: blockedWords });
+
+      if (blockedWords[index] === "" || blockedChatters[index] === "") {
+        deleteLine(type, index);
+      } else {
+        dispatch({
+          type: SET_BLOCKED_CHATTERS,
+          blockedChatters: blockedChatters,
+        });
+        dispatch({ type: SET_BLOCKED_WORDS, blockedWords: blockedWords });
+      }
     }
   };
 
@@ -132,7 +134,7 @@ const ChatSettings = () => {
                 type="text"
                 placeholder="Type a word to block"
                 onChange={(e) => handleChangeArray(e, WORD, index)}
-                onKeyDown={handleKeyDown}
+                onKeyDown={(e) => handleKeyDownUpdate(e, WORD, index)}
                 onMouseEnter={() => setShowCloseIcon(`WORD-${index}`)}
                 // onMouseLeave={() => setShowCloseIcon("")}
               />
@@ -150,7 +152,7 @@ const ChatSettings = () => {
             key="newBlockedWord"
             value={newBlockedWord}
             onChange={(e) => setNewBlockedWord(e.target.value)}
-            onKeyDown={(e) => handleKeyDownUpdate(e, WORD)}
+            onKeyDown={(e) => handleKeyDownNew(e, WORD)}
             type="text"
             placeholder="Type a word to block"
             onFocus={() => setShowCloseIcon(null)}
@@ -176,7 +178,7 @@ const ChatSettings = () => {
                 type="text"
                 placeholder="Type a username to ban"
                 onChange={(e) => handleChangeArray(e, CHATTER, index)}
-                onKeyDown={handleKeyDown}
+                onKeyDown={(e) => handleKeyDownUpdate(e, CHATTER, index)}
                 onMouseEnter={() => setShowCloseIcon(`CHATTER-${index}`)}
                 // onMouseLeave={() => setShowCloseIcon("")}
               />
@@ -194,7 +196,7 @@ const ChatSettings = () => {
             key="newBlockedChatter"
             value={newBlockedChatter}
             onChange={(e) => setNewBlockedChatter(e.target.value)}
-            onKeyDown={(e) => handleKeyDownUpdate(e, CHATTER)}
+            onKeyDown={(e) => handleKeyDownNew(e, CHATTER)}
             type="text"
             placeholder="Type a username to ban"
             onFocus={() => setShowCloseIcon(null)}

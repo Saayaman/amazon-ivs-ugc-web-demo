@@ -46,8 +46,8 @@
 }
 
 .chat-avatar-wrapper {
-  width: 24px;
-  height: 24px;
+  width: 2.4rem;
+  height: 2.4rem;
   margin-right: 1.2rem;
   border-radius: 1.4rem;
   overflow: hidden;
@@ -60,6 +60,8 @@
 
 .composer {
   padding-top: 8px;
+  display: flex;
+  align-items: center;
 }
 
 .composer .input-wrapper {
@@ -85,6 +87,9 @@
 }
 
 .composer .input-button {
+  position: absolute;
+  right: 8px;
+  bottom: 12px;
   background-color: unset;
   padding: 0 !important;
   width: 2.4rem;

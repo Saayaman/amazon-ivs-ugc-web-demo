@@ -9,15 +9,11 @@ import SettingsContext from "../../context/SettingsContext";
 import "./Chat.css";
 
 const Chat = ({ userInfo, handleSignIn, id }) => {
-  const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [connection, setConnection] = useState(null);
-  const [openPicker, setOpenPicker] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
   const messagesEndRef = useRef(null);
   const [state, dispatch] = useContext(SettingsContext);
-
-  const { blockedWords, blockedChatters } = state;
 
   useEffect(() => {
     const initConnection = async () => {
@@ -65,11 +61,7 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
     scrollToBottom();
   });
 
-  const handleChange = (e) => {
-    setMessage(e.target.value);
-  };
-
-  const sendMessage = () => {
+  const sendMessage = (message) => {
     if (message) {
       const { profile, preferred_username, picture } = userInfo;
       const data = JSON.stringify({
@@ -82,14 +74,6 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
         },
       });
       connection.send(data);
-      setMessage("");
-    }
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.keyCode === 13) {
-      // keyCode 13 is carriage return
-      sendMessage();
     }
   };
 
@@ -120,8 +104,11 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
 
       if (seconds !== null && seconds < 30 && isSameUser) {
         return (
-          <div className="chat-line" key={msg.timestamp} style={{ margin: 0 }}>
-            <div className="chat-avatar-wrapper">&nbsp;</div>
+          <div
+            className="chat-line"
+            key={msg.timestamp}
+            style={{ marginTop: 0, marginLeft: "3.6rem" }}
+          >
             <p dangerouslySetInnerHTML={{ __html: formattedMessage }} />
           </div>
         );
@@ -142,14 +129,6 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
     });
   };
 
-  //react-emoji-picker
-  const handleSelectEmoji = (event, emojiObject) => {
-    setMessage((prevState) => {
-      return `${prevState}${emojiObject.emoji}`;
-    });
-    setOpenPicker(false);
-  };
-
   return (
     <div id={id} className="col-wrapper">
       <div className="chat-wrapper top-0 bottom-0">
@@ -166,27 +145,11 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
         <div className="composer">
           {!!userInfo.preferred_username && (
             <>
-              {openPicker && <Picker emojiClicked={handleSelectEmoji} />}
               {!!errorMsg && <div>{errorMsg}</div>}
-              <div className="input-wrapper">
-                <button
-                  className="input-button"
-                  onClick={() => setOpenPicker(!openPicker)}
-                >
-                  <img src="/icons/smily.svg" />
-                </button>
-                <input
-                  type="text"
-                  placeholder="Type a message..."
-                  value={message}
-                  maxLength={510}
-                  onChange={handleChange}
-                  onKeyDown={handleKeyDown}
-                />
-                <button className="input-button" onClick={sendMessage}>
-                  <img src="/icons/send.svg" />
-                </button>
-              </div>
+              <Picker handleOnEnter={sendMessage} />
+              {/* <button className="input-button" onClick={sendMessage}>
+                <img src="/icons/send.svg" />
+              </button> */}
             </>
           )}
           {!userInfo.preferred_username && (

@@ -303,3 +303,8 @@ header {
     display: unset;
   }
 }
+
+body::-webkit-scrollbar-track {
+  background-color: darkgray;
+}
+ 

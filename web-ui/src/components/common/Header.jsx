@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
-import { withRouter, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useHistory, Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import * as util from "../util";
 
 const Header = (props) => {
+  const history = useHistory();
   const { avatar, avatarImg, checkedAuth, signedIn, myChannel, handleSignIn } =
     props;
   const [showAvatarOptions, setShowAvatarOptions] = useState(false);
@@ -19,7 +20,7 @@ const Header = (props) => {
   const handleSignOut = (e, redirectUrl) => {
     e.preventDefault();
     util.removeSession("ugc");
-    history.go(0); // refresh the page
+    history.go(0);
   };
 
   const handleClickOutside = (e) => {
@@ -107,8 +108,7 @@ Header.propTypes = {
   handleSignIn: PropTypes.func,
   signedIn: PropTypes.bool,
   myChannel: PropTypes.string,
-  history: PropTypes.object,
   checkedAuth: PropTypes.bool,
 };
 
-export default withRouter(Header);
+export default Header;

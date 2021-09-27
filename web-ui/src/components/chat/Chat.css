@@ -58,6 +58,22 @@
   height: 100%;
 }
 
+.messages-error {
+  background-color: #FFE249;
+  color: #000000;
+  border-radius: 0.8rem;
+  padding: 8px;
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin-top: 0.8rem;
+  display: flex;
+}
+
+.messages-error img {
+  width: 20px;
+  margin-right: 10px;
+}
+
 .composer {
   padding-top: 8px;
   display: flex;

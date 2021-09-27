@@ -4,11 +4,12 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import * as config from "../../config";
 import Picker from "../picker/Picker";
 import SettingsContext from "../../context/SettingsContext";
+import Filter from "bad-words";
 
 // Styles
 import "./Chat.css";
 
-const Chat = ({ userInfo, handleSignIn, id }) => {
+const Chat = ({ userInfo, handleSignIn, id, streamData }) => {
   const [messages, setMessages] = useState([]);
   const [connection, setConnection] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -29,6 +30,7 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
 
       connectionInit.onerror = (event) => {
         console.error("WebSocket error observed:", event);
+        setErrorMsg(event);
       };
 
       connectionInit.onmessage = (event) => {
@@ -44,7 +46,6 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
             avatar: metadata.profile,
           },
         };
-
         setMessages((prevState) => {
           return [...prevState, newMessage];
         });
@@ -129,6 +130,12 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
     });
   };
 
+  const blockedUser =
+    !!streamData.bannedChatters &&
+    streamData.bannedChatters.find(
+      (element) => element === userInfo.preferred_username
+    );
+
   return (
     <div id={id} className="col-wrapper">
       <div className="chat-wrapper top-0 bottom-0">
@@ -142,23 +149,30 @@ const Chat = ({ userInfo, handleSignIn, id }) => {
             <div ref={messagesEndRef} />
           </div>
         </div>
+        {!!errorMsg && (
+          <div className="messages-error">
+            <img src="/icons/alert_icon.svg" /> {errorMsg}
+          </div>
+        )}
         <div className="composer">
-          {!!userInfo.preferred_username && (
-            <>
-              {!!errorMsg && <div>{errorMsg}</div>}
-              <Picker handleOnEnter={sendMessage} />
-              {/* <button className="input-button" onClick={sendMessage}>
-                <img src="/icons/send.svg" />
-              </button> */}
-            </>
-          )}
-          {!userInfo.preferred_username && (
+          {!!userInfo.preferred_username && !blockedUser ? (
+            <Picker
+              handleOnEnter={sendMessage}
+              setErrorMsg={setErrorMsg}
+              streamData={streamData}
+            />
+          ) : !userInfo.preferred_username ? (
             <button
               onClick={() => handleSignIn(true)}
               className="signIn full-width"
             >
               Sign in to chat
             </button>
+          ) : (
+            <input
+              disabled
+              placeholder="You can’t send messages to this chat room"
+            />
           )}
         </div>
       </div>

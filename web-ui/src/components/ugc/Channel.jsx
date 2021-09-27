@@ -48,6 +48,7 @@ const Channel = (props) => {
     if (config.USE_MOCK_DATA) {
       // If using mock data, search mock data for the current stream.
       const { streams } = mockStreams;
+      //*!important: the username of the live stream must not change in real life in order for this to work
       const currentS = streams.filter((stream) => stream.username === username);
       setMultipleStates(currentS);
     } else {
@@ -81,7 +82,6 @@ const Channel = (props) => {
       // If using mock data, search mock data for the current stream.
       const { streams } = mockStreams;
       const currentS = streams.filter((stream) => stream.username === username);
-
       setMultipleStates(currentS);
     } else {
       // If using real data, fetch streams using the API
@@ -114,6 +114,7 @@ const Channel = (props) => {
       if (response.status === 200) {
         const json = await response.json();
         const streams = json;
+
         const currentStream = streams.filter(
           (stream) => stream.username === username
         );
@@ -329,7 +330,12 @@ const Channel = (props) => {
       <div className="contents-wrapper">
         {/* <div className="channel-wrapper-inner"> */}
         {videoPlayerComponent}
-        <Chat id="chat" userInfo={userInfo} handleSignIn={props.handleSignIn} />
+        <Chat
+          id="chat"
+          userInfo={userInfo}
+          handleSignIn={props.handleSignIn}
+          streamData={streamData.currentStream}
+        />
         {/* </div> */}
         {renderTitle()}
         <div id="emptyBox"></div>

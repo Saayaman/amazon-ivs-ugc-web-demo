@@ -37,12 +37,18 @@
   left: 0;
 }
 
+.react-input-emoji--button svg {
+  fill: #ffffff !important;
+  width: 20px;
+  height: 20px;
+}
+
 .react-input-emoji--button__show svg {
   fill: #FFE249 !important;
 }
 
 .emoji-mart-scroll {
-  height: 154px !important;
+  height: 106px;
 }
 
 .react-input-emoji--placeholder {

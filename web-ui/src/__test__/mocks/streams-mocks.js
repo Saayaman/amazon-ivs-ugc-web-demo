@@ -8,6 +8,8 @@ export const mockStreams = {
       bgColor: "green",
       stream: "",
       isLive: "Yes",
+      bannedChatters: ["ayako", "gabriel"],
+      blockedWords: ["smoke", "weed"],
     },
     {
       channelName: "Crafting stream",
@@ -17,6 +19,8 @@ export const mockStreams = {
       bgColor: "yellow",
       stream: "",
       isLive: "Yes",
+      bannedChatters: ["ayako", "gabriel"],
+      blockedWords: ["liquor", "alcohol"],
     },
     {
       channelName: "Runningfast on a trail stream",
@@ -26,6 +30,8 @@ export const mockStreams = {
       bgColor: "blue",
       stream: "",
       isLive: "Yes",
+      bannedChatters: ["ayako", "gabriel"],
+      blockedWords: ["smoke", "weed"],
     },
     {
       channelName: "Preparing a big meal!",
@@ -35,6 +41,8 @@ export const mockStreams = {
       bgColor: "pink",
       stream: "",
       isLive: "Yes",
+      bannedChatters: ["ayako", "gabriel"],
+      blockedWords: ["smoke", "weed"],
     },
     {
       channelName:
@@ -45,6 +53,8 @@ export const mockStreams = {
       bgColor: "purple",
       stream: "",
       isLive: "Yes",
+      bannedChatters: ["shawn", "ayako", "gabriel"],
+      blockedWords: ["smoke", "weed", "puddings"],
     },
   ],
 };

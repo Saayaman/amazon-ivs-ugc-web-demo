@@ -1,5 +1,15 @@
 .stream-items {
+  display: grid;
+  grid-gap: 1rem;
   grid-row-gap: 4rem;
+  grid-template-columns: var(--grid-3-columns);
+}
+
+@media (max-width: 767px) { /* Large Screens */
+  .stream-items {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .stream-item {

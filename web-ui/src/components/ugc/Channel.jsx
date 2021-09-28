@@ -7,12 +7,20 @@ import * as util from "../util";
 // Components
 import VideoPlayer from "../videoPlayer/VideoPlayer";
 import HowToStream from "./HowToStream";
+import Chat from "../chat/Chat";
 
 // Mock data
 import { mockStreams } from "../../__test__/mocks/streams-mocks";
-import Chat from "../chat/Chat";
 
-const Channel = (props) => {
+const Channel = ({
+  auth,
+  checkedAuth,
+  changeAttribute,
+  userInfo,
+  signedIn,
+  handleSignIn,
+  match,
+}) => {
   const [streamId, setStreamId] = useState("");
   const [elapsedStreaming, setElapsedStreaming] = useState("");
   const [streamData, setStreamData] = useState({
@@ -35,31 +43,54 @@ const Channel = (props) => {
     }
   };
 
-  useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
+  const setStream = () => {
+    const streamer = match.params.user;
+    setStreamId(streamer);
 
-    // Get current channel's username from the URL params
-    const username = props.match.params.user;
-
-    // Set the streamId to the current channel's username
-    setStreamId(username);
-
-    // Set the currentStream object to the correct stream
     if (config.USE_MOCK_DATA) {
       // If using mock data, search mock data for the current stream.
       const { streams } = mockStreams;
-      //*!important: the username of the live stream must not change in real life in order for this to work
-      const currentS = streams.filter((stream) => stream.username === username);
-      setMultipleStates(currentS);
+
+      if (streamer === userInfo.preferred_username) {
+        setStreamData({
+          currentStream: {
+            avatar: userInfo.avatar,
+            bgColor: userInfo.profile.bgColor,
+            channelName:
+              userInfo.profile.defaultChannelDetails.defaultChannelName,
+            channelStatus: {},
+            isLive: "No",
+            username: userInfo.preferred_username,
+            stream: "",
+          },
+          avatar: userInfo.avatar,
+          gotStreams: true,
+        });
+      } else {
+        const currentS = streams.filter(
+          (stream) => stream.username === streamer
+        );
+        setMultipleStates(currentS);
+      }
     } else {
       // If using real data, fetch streams using the API
-      getAndSetStreamInfo(username);
+      getAndSetStreamInfo(streamer);
     }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    setStream();
     return () => {
       stopTick();
       stopStreamTimeout();
     };
   }, []);
+
+  useEffect(() => {
+    stopStreamTimeout();
+    setStream();
+  }, [match.params.user]);
 
   const setMultipleStates = (currentSt) => {
     setStreamData({
@@ -69,34 +100,14 @@ const Channel = (props) => {
     });
   };
 
-  useEffect(() => {
-    stopStreamTimeout();
-
-    const username = props.match.params.user;
-
-    // Set the streamId to the current channel's username
-    setStreamId(username);
-
-    // Set the currentStream object to the correct stream
-    if (config.USE_MOCK_DATA) {
-      // If using mock data, search mock data for the current stream.
-      const { streams } = mockStreams;
-      const currentS = streams.filter((stream) => stream.username === username);
-      setMultipleStates(currentS);
-    } else {
-      // If using real data, fetch streams using the API
-      getAndSetStreamInfo(username);
-    }
-  }, [props.match.params.user]);
-
-  const getAndSetStreamInfo = async (username) => {
-    getCurrentStreamInfo(username)
+  const getAndSetStreamInfo = async (streamer) => {
+    getCurrentStreamInfo(streamer)
       .then((currentS) => {
         setMultipleStates(currentS);
         if (currentS[0].isLive === "No") {
           // If we're not live, get the stream info again after a short timeout
           streamTimeoutID.current = setTimeout(() => {
-            getAndSetStreamInfo(username);
+            getAndSetStreamInfo(streamer);
           }, 5000);
         }
       })
@@ -105,7 +116,7 @@ const Channel = (props) => {
       });
   };
 
-  const getCurrentStreamInfo = async (username) => {
+  const getCurrentStreamInfo = async (streamer) => {
     try {
       const baseUrl = util.getApiUrlBase();
       const url = `${baseUrl}`;
@@ -116,7 +127,7 @@ const Channel = (props) => {
         const streams = json;
 
         const currentStream = streams.filter(
-          (stream) => stream.username === username
+          (stream) => stream.username === streamer
         );
         return currentStream;
       } else {
@@ -133,24 +144,14 @@ const Channel = (props) => {
 
   const handleMyStreamTitleClick = (e) => {
     const myStreamTitleObj = { defaultChannelName: myStreamTitle };
-    props.changeAttribute(
-      props.auth,
-      "Stream Title",
-      "profile",
-      myStreamTitleObj
-    );
+    changeAttribute(auth, "Stream Title", "profile", myStreamTitleObj);
   };
 
   const handleStreamTitleKeyDown = (e, streamTitle) => {
     if (e.keyCode === 13 && streamTitle) {
       // keyCode 13 is carriage return
       const myStreamTitle = { defaultChannelName: streamTitle };
-      props.changeAttribute(
-        props.auth,
-        "Stream Title",
-        "profile",
-        myStreamTitle
-      );
+      changeAttribute(auth, "Stream Title", "profile", myStreamTitle);
     }
   };
 
@@ -192,8 +193,6 @@ const Channel = (props) => {
     clearInterval(streamTimeoutID.current);
   };
 
-  const { userInfo, signedIn, checkedAuth } = props;
-
   // Set channel avatar
   const channelAvatarUrl = util.getAvatarUrl(streamData.avatar);
 
@@ -231,7 +230,7 @@ const Channel = (props) => {
   if (!isMyChannel && userInfoValid) {
     if (
       userInfo.preferred_username === streamData.currentStream.username ||
-      props.channelUser === userInfo.preferred_username
+      match.params.user === userInfo.preferred_username
     ) {
       isMyChannel = true;
     }
@@ -252,14 +251,10 @@ const Channel = (props) => {
 
   if (streamData.gotStreams) {
     if (isLiveStreaming) {
-      videoPlayerComponent = (
-        <VideoPlayer id="video" videoStream={videoStream} />
-      );
+      videoPlayerComponent = <VideoPlayer videoStream={videoStream} />;
     } else {
       if (checkedAuth) {
-        videoPlayerComponent = (
-          <HowToStream id="video" isMyChannel={isMyChannel} />
-        );
+        videoPlayerComponent = <HowToStream isMyChannel={isMyChannel} />;
       }
     }
   }
@@ -328,15 +323,12 @@ const Channel = (props) => {
     //id is used for positioning css grid
     <div className="main stream-container">
       <div className="contents-wrapper">
-        {/* <div className="channel-wrapper-inner"> */}
         {videoPlayerComponent}
         <Chat
-          id="chat"
           userInfo={userInfo}
-          handleSignIn={props.handleSignIn}
+          handleSignIn={handleSignIn}
           streamData={streamData.currentStream}
         />
-        {/* </div> */}
         {renderTitle()}
         <div id="emptyBox"></div>
       </div>
@@ -347,14 +339,12 @@ const Channel = (props) => {
 Channel.propTypes = {
   auth: PropTypes.object,
   checkedAuth: PropTypes.bool,
-  onSuccess: PropTypes.func,
-  onFailure: PropTypes.func,
   changeAttribute: PropTypes.func,
   userInfo: PropTypes.object,
   username: PropTypes.string,
   signedIn: PropTypes.bool,
+  handleSignIn: PropTypes.func,
   match: PropTypes.object,
-  channelUser: PropTypes.string,
 };
 
 export default withRouter(Channel);

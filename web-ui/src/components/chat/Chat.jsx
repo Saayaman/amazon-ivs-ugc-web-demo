@@ -1,15 +1,15 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 import React, { useEffect, useState, useRef, useContext } from "react";
-import * as config from "../../config";
+import PropTypes from "prop-types";
 import Picker from "../picker/Picker";
 import SettingsContext from "../../context/SettingsContext";
-import Filter from "bad-words";
+import * as config from "../../config";
 
 // Styles
 import "./Chat.css";
 
-const Chat = ({ userInfo, handleSignIn, id, streamData }) => {
+const Chat = ({ userInfo, handleSignIn, streamData }) => {
   const [messages, setMessages] = useState([]);
   const [connection, setConnection] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -137,7 +137,7 @@ const Chat = ({ userInfo, handleSignIn, id, streamData }) => {
     );
 
   return (
-    <div id={id} className="col-wrapper">
+    <div id="chat" className="col-wrapper">
       <div className="chat-wrapper top-0 bottom-0">
         <div
           className={`messages ${
@@ -151,7 +151,10 @@ const Chat = ({ userInfo, handleSignIn, id, streamData }) => {
         </div>
         {!!errorMsg && (
           <div className="messages-error">
-            <img src="/icons/alert_icon.svg" /> {errorMsg}
+            <div className="messages-error-icon">
+              <img src="/icons/alert_icon.svg" />
+            </div>
+            {errorMsg}
           </div>
         )}
         <div className="composer">
@@ -178,6 +181,12 @@ const Chat = ({ userInfo, handleSignIn, id, streamData }) => {
       </div>
     </div>
   );
+};
+
+Chat.propTypes = {
+  userInfo: PropTypes.object.isRequired,
+  handleSignIn: PropTypes.func.isRequired,
+  streamData: PropTypes.object.isRequired,
 };
 
 export default Chat;

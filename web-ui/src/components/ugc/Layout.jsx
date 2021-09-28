@@ -184,11 +184,8 @@ const Layout = (props) => {
           <Channel
             auth={auth}
             checkedAuth={checkedAuth}
-            onSuccess={onSuccess}
-            onFailure={onFailure}
             changeAttribute={changeAttribute}
             userInfo={userInfo}
-            username={preferred_username}
             signedIn={signedIn}
             handleSignIn={setShowSignedIn}
           />

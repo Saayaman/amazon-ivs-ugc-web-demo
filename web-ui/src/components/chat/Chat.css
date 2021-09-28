@@ -69,9 +69,14 @@
   display: flex;
 }
 
-.messages-error img {
+.messages-error-icon {
   width: 20px;
   margin-right: 10px;
+}
+
+.messages-error img {
+  width: 100%;
+  height: 100%;
 }
 
 .composer {

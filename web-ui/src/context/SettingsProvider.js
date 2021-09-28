@@ -1,5 +1,6 @@
 import React from "react";
 import SettingsContext from "./SettingsContext";
+import PropTypes from "prop-types";
 
 export const GET_BLOCKED_SETTINGS = "GET_BLOCCKED_SETINGS";
 export const SET_BLOCKED_WORDS = "SET_BLOCKED_WORDS";
@@ -38,6 +39,10 @@ const SettingsContextProvider = ({ children }) => {
       {children}
     </SettingsContext.Provider>
   );
+};
+
+SettingsContextProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default SettingsContextProvider;

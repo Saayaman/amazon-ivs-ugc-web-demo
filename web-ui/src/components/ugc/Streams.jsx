@@ -44,9 +44,7 @@ const Streams = ({ streams, showOfflineStreams }) => {
       <div className="mg-b-1">
         <h2>{`${headingText}`}</h2>
       </div>
-      <div className="stream-items grid grid--responsive grid--3">
-        {generateStreams()}
-      </div>
+      <div className="stream-items">{generateStreams()}</div>
     </div>
   );
 };

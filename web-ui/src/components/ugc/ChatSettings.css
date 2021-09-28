@@ -19,7 +19,7 @@
   padding-left: 1.4rem;
   padding-right: 1.4rem;
   max-height: 400px;
-  overflow-y: scroll;
+  overflow-y: auto;
   border-radius: 0.6rem;
 }
 

@@ -305,6 +305,6 @@ header {
 }
 
 body::-webkit-scrollbar-track {
-  background-color: darkgray;
+  background-color: transparent !important;
 }
  

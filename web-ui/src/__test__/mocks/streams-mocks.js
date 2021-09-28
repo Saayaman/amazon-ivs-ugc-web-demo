@@ -20,7 +20,7 @@ export const mockStreams = {
       stream: "",
       isLive: "Yes",
       bannedChatters: ["ayako", "gabriel"],
-      blockedWords: ["liquor", "alcohol"],
+      blockedWords: ["smoke", "weed"],
     },
     {
       channelName: "Runningfast on a trail stream",
@@ -54,7 +54,7 @@ export const mockStreams = {
       stream: "",
       isLive: "Yes",
       bannedChatters: ["shawn", "ayako", "gabriel"],
-      blockedWords: ["smoke", "weed", "puddings"],
+      blockedWords: ["smoke", "weed"],
     },
   ],
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import InputEmoji from "react-input-emoji";
 import Filter from "bad-words";
+import PropTypes from "prop-types";
 import * as config from "../../config";
 
 import "./Picker.css";
@@ -11,7 +12,7 @@ const PickerComp = ({ handleOnEnter, setErrorMsg, streamData }) => {
 
   const handleEnter = () => {
     if (config.USE_MOCK_DATA) {
-      if (filter.isProfane(message)) {
+      if (!filter.isProfane(message)) {
         handleOnEnter(message);
         setMessage("");
       }
@@ -53,6 +54,12 @@ const PickerComp = ({ handleOnEnter, setErrorMsg, streamData }) => {
       </button>
     </>
   );
+};
+
+PickerComp.propTypes = {
+  handleOnEnter: PropTypes.func.isRequired,
+  setErrorMsg: PropTypes.func.isRequired,
+  streamData: PropTypes.object.isRequired,
 };
 
 export default PickerComp;

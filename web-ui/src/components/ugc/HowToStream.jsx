@@ -6,7 +6,7 @@ import * as util from "../util";
 // Styles
 import "./HowToStream.css";
 
-const HowToStream = ({ isMyChannel, id }) => {
+const HowToStream = ({ isMyChannel }) => {
   const basePath = util.getBasePath();
 
   let toRender = (
@@ -50,7 +50,7 @@ const HowToStream = ({ isMyChannel, id }) => {
     );
   }
   return (
-    <div id={id} className="full-width">
+    <div id="video" className="full-width">
       {toRender}
     </div>
   );

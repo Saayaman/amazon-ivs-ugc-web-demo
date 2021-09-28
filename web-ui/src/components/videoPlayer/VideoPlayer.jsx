@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 // Styles
 import "./VideoPlayer.css";
 
-const VideoPlayer = ({ videoStream, id }) => {
+const VideoPlayer = ({ videoStream }) => {
   const playerRef = useRef(null);
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const VideoPlayer = ({ videoStream, id }) => {
   };
 
   return (
-    <div id={id} className="video-container">
+    <div id="video" className="video-container">
       <video
         id="amazon-ivs-videojs"
         className="video-js vjs-fluid vjs-big-play-centered"

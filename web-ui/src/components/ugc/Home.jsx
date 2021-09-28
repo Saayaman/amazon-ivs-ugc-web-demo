@@ -104,7 +104,7 @@ const Home = (props) => {
 
   return (
     <div className="main">
-      <div className="contents-wrapper mg-2">{componentToRender}</div>
+      <div className="contents-wrapper pd-2">{componentToRender}</div>
     </div>
   );
 };

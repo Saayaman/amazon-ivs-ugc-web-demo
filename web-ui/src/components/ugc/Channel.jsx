@@ -54,7 +54,7 @@ const Channel = ({
       if (streamer === userInfo.preferred_username) {
         setStreamData({
           currentStream: {
-            avatar: userInfo.avatar,
+            avatar: userInfo.picture,
             bgColor: userInfo.profile.bgColor,
             channelName:
               userInfo.profile.defaultChannelDetails.defaultChannelName,
@@ -63,7 +63,7 @@ const Channel = ({
             username: userInfo.preferred_username,
             stream: "",
           },
-          avatar: userInfo.avatar,
+          avatar: userInfo.picture,
           gotStreams: true,
         });
       } else {

@@ -21,6 +21,7 @@
   height: 100%;
   width: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column-reverse;
   justify-content: end;
@@ -31,6 +32,7 @@
 
 .chat-line {
   display: flex;
+  flex-shrink: 0;
   margin-top: 1.6rem;
   font-size: 1.4rem;
 }
@@ -38,6 +40,8 @@
 .chat-line p {
   line-height: 2rem;
   font-weight: 300;
+  word-wrap: break-word;
+  word-break: break-all;
 }
 
 .chat-line .username {
@@ -72,6 +76,8 @@
 .messages-error-icon {
   width: 20px;
   margin-right: 10px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
 .messages-error img {
@@ -99,8 +105,11 @@
   border: none;
   width: 100%;
   border-radius: 8px;
-  /* padding: 0 6px 0 6px; */
-  height: 4.8rem;
+  height: 4.8rem; 
+}
+
+.composer .blockedUser-input {
+  text-align: center;
 }
 
 .composer input:focus {

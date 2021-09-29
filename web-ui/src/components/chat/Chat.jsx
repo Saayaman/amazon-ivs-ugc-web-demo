@@ -173,6 +173,7 @@ const Chat = ({ userInfo, handleSignIn, streamData }) => {
             </button>
           ) : (
             <input
+              className="blockedUser-input"
               disabled
               placeholder="You can’t send messages to this chat room"
             />

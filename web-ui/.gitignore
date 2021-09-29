@@ -5,3 +5,6 @@
 
 # production
 /build
+
+# redirects
+/public/_redirects 

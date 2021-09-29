@@ -48,7 +48,7 @@
 }
 
 .emoji-mart-scroll {
-  height: 106px;
+  height: 106px !important;
 }
 
 .react-input-emoji--placeholder {
@@ -95,6 +95,7 @@ button.emoji-mart-emoji:hover {
 }
 .emoji-mart-search input {
   padding: 0 6px 0 6px;
+  border: none !important;
 }
 
 .emoji-mart-search-icon {

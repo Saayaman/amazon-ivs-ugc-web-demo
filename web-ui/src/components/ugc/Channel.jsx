@@ -31,6 +31,15 @@ const Channel = ({
   const [showMessage, setShowMessage] = useState(false);
   const [myStreamTitle, setMyStreamTitle] = useState("");
 
+  useEffect(() => {
+    if (Object.keys(userInfo).length !== 0) {
+      setMyStreamTitle(
+        userInfo.profile.defaultChannelName ||
+          userInfo.profile.defaultChannelDetails.channel.name
+      );
+    }
+  }, []);
+
   let intervalID = useRef(null);
   let streamTimeoutID = useRef(null);
 
@@ -50,7 +59,6 @@ const Channel = ({
     if (config.USE_MOCK_DATA) {
       // If using mock data, search mock data for the current stream.
       const { streams } = mockStreams;
-
       if (streamer === userInfo.preferred_username) {
         setStreamData({
           currentStream: {
@@ -80,7 +88,10 @@ const Channel = ({
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
-    setStream();
+
+    if (Object.keys(userInfo).length !== 0) {
+      setStream();
+    }
     return () => {
       stopTick();
       stopStreamTimeout();
@@ -138,20 +149,17 @@ const Channel = ({
     }
   };
 
-  const handleMyStreamTitleChange = (e) => {
-    setMyStreamTitle(e.target.value);
-  };
-
   const handleMyStreamTitleClick = (e) => {
     const myStreamTitleObj = { defaultChannelName: myStreamTitle };
     changeAttribute(auth, "Stream Title", "profile", myStreamTitleObj);
   };
 
-  const handleStreamTitleKeyDown = (e, streamTitle) => {
-    if (e.keyCode === 13 && streamTitle) {
+  const handleStreamTitleKeyDown = (e) => {
+    if (e.keyCode === 13 && myStreamTitle) {
       // keyCode 13 is carriage return
-      const myStreamTitle = { defaultChannelName: streamTitle };
-      changeAttribute(auth, "Stream Title", "profile", myStreamTitle);
+      changeAttribute(auth, "Stream Title", "profile", {
+        defaultChannelName: myStreamTitle,
+      });
     }
   };
 
@@ -236,16 +244,6 @@ const Channel = ({
     }
   }
 
-  // Set the title of the current stream
-  let currentStreamTitle = myStreamTitle;
-  // If the stream title is not set, display the default title.
-  if (!currentStreamTitle && userInfoValid) {
-    currentStreamTitle =
-      userInfo.profile.defaultChannelName ||
-      userInfo.profile.defaultChannelDetails.channel.name;
-  }
-  const saveStreamTitleDisabled = !currentStreamTitle;
-
   // Compose player component
   let videoPlayerComponent = <div></div>;
 
@@ -270,13 +268,13 @@ const Channel = ({
               type="text"
               placeholder="Stream Title"
               className="pd-t-1 stream-title-input"
-              value={currentStreamTitle}
-              onKeyDown={(e) => handleStreamTitleKeyDown(e, currentStreamTitle)}
-              onChange={handleMyStreamTitleChange}
+              value={myStreamTitle}
+              onKeyDown={(e) => handleStreamTitleKeyDown(e, myStreamTitle)}
+              onChange={(e) => setMyStreamTitle(e.target.value)}
             />
             <button
               className="stream-title-button"
-              disabled={saveStreamTitleDisabled}
+              disabled={!myStreamTitle}
               onClick={handleMyStreamTitleClick}
             >
               Save

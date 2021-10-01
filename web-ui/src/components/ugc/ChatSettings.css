@@ -28,10 +28,13 @@
   border-bottom: 1px solid #4A4A4A;
 }
 
+.settings-block-item--last {
+  border-bottom: none;
+}
+
 .settings-block-list input {
   padding: 0;
   border: none;
-  /* border-bottom: 1px solid #4A4A4A; */
   background: none;
   border-radius: 0;
   margin-bottom: unset;

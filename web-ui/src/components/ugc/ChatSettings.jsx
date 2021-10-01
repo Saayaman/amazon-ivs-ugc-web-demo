@@ -59,7 +59,8 @@ const ChatSettings = () => {
 
   const handleKeyDownNew = async (e, type) => {
     if (e.keyCode === 13) {
-      if (!!newBlockedChatter || !!newBlockedWord) {
+      // no white space and not empty
+      if (/\S/.test(newBlockedWord) || /\S/.test(newBlockedChatter)) {
         await loadSettings(type);
         type === WORD ? setNewBlockedWord("") : setNewBlockedChatter("");
         scrollToBottom();
@@ -118,6 +119,13 @@ const ChatSettings = () => {
       });
     }
   };
+  const renderCloseIcon = (handleDelete) => {
+    return (
+      <div className="settings-unblock-icon" onClick={handleDelete}>
+        <img src="/icons/cross_icon.svg" />
+      </div>
+    );
+  };
 
   return (
     <fieldset className="chat-settings">
@@ -136,27 +144,26 @@ const ChatSettings = () => {
                 onChange={(e) => handleChangeArray(e, WORD, index)}
                 onKeyDown={(e) => handleKeyDownUpdate(e, WORD, index)}
                 onMouseEnter={() => setShowCloseIcon(`WORD-${index}`)}
-                // onMouseLeave={() => setShowCloseIcon("")}
+                onMouseOut={() => setShowCloseIcon(null)}
               />
-              {showCloseIcon === `WORD-${index}` && (
-                <div
-                  className="settings-unblock-icon"
-                  onClick={() => deleteLine(WORD, index)}
-                >
-                  <img src="/icons/cross_icon.svg" />
-                </div>
-              )}
+              {showCloseIcon === `WORD-${index}` &&
+                renderCloseIcon(() => deleteLine(CHATTER, index))}
             </div>
           ))}
-          <input
-            key="newBlockedWord"
-            value={newBlockedWord}
-            onChange={(e) => setNewBlockedWord(e.target.value)}
-            onKeyDown={(e) => handleKeyDownNew(e, WORD)}
-            type="text"
-            placeholder="Type a word to block"
-            onFocus={() => setShowCloseIcon(null)}
-          />
+          <div className="settings-block-item  settings-block-item--last">
+            <input
+              key="newBlockedWord"
+              value={newBlockedWord}
+              onChange={(e) => setNewBlockedWord(e.target.value)}
+              onKeyDown={(e) => handleKeyDownNew(e, WORD)}
+              type="text"
+              placeholder="Type a word to block"
+              onMouseEnter={() => setShowCloseIcon(`WORD-NEW`)}
+            />
+            {showCloseIcon === `WORD-NEW` &&
+              newBlockedWord &&
+              renderCloseIcon(() => setNewBlockedWord(""))}
+          </div>
         </div>
         <p>
           Messages containing words in this list will not be sent to your chat
@@ -180,27 +187,26 @@ const ChatSettings = () => {
                 onChange={(e) => handleChangeArray(e, CHATTER, index)}
                 onKeyDown={(e) => handleKeyDownUpdate(e, CHATTER, index)}
                 onMouseEnter={() => setShowCloseIcon(`CHATTER-${index}`)}
-                // onMouseLeave={() => setShowCloseIcon("")}
+                onMouseOut={() => setShowCloseIcon(null)}
               />
-              {showCloseIcon === `CHATTER-${index}` && (
-                <div
-                  className="settings-unblock-icon"
-                  onClick={() => deleteLine(CHATTER, index)}
-                >
-                  <img src="/icons/cross_icon.svg" />
-                </div>
-              )}
+              {showCloseIcon === `CHATTER-${index}` &&
+                renderCloseIcon(() => deleteLine(CHATTER, index))}
             </div>
           ))}
-          <input
-            key="newBlockedChatter"
-            value={newBlockedChatter}
-            onChange={(e) => setNewBlockedChatter(e.target.value)}
-            onKeyDown={(e) => handleKeyDownNew(e, CHATTER)}
-            type="text"
-            placeholder="Type a username to ban"
-            onFocus={() => setShowCloseIcon(null)}
-          />
+          <div className="settings-block-item settings-block-item--last">
+            <input
+              key="newBlockedChatter"
+              value={newBlockedChatter}
+              onChange={(e) => setNewBlockedChatter(e.target.value)}
+              onKeyDown={(e) => handleKeyDownNew(e, CHATTER)}
+              type="text"
+              placeholder="Type a username to ban"
+              onMouseEnter={() => setShowCloseIcon(`CHATTER-NEW`)}
+            />
+            {showCloseIcon === `CHATTER-NEW` &&
+              newBlockedChatter &&
+              renderCloseIcon(() => setNewBlockedChatter(""))}
+          </div>
         </div>
         <p>
           Users on this list will not be able to send messages in your chat

@@ -1,0 +1,57 @@
+
+.emoji-picker-list {
+  height: 150px;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #525252;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  padding: 1.4rem;
+}
+
+.emoji-picker-list-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.8rem;
+  font-size: 2.4rem;
+  line-height: 2.4rem;
+}
+
+button.emoji-picker-list-emoji {
+  background: none;
+  padding: 0;
+  border: none;
+  height: 100%;
+  position: relative;
+}
+
+.tooltiptext {
+  /* position: absolute;
+  left: calc(-50% + 2.4rem); */
+  z-index: 20;
+  font-size: 1.4rem;
+  /* transform: translateX(-50%); */
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  padding: 5px;
+  border-radius: 6px;
+}
+
+.tooltiptext:after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -10px;
+  border-width: 7px;
+  border-style: solid;
+  border-color: #000 transparent transparent transparent;
+}
+
+/* .emoji-picker-list-emoji:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+  z-index: 100;
+} */

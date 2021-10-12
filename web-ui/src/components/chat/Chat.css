@@ -28,6 +28,7 @@
   border: 1px solid #4A4A4A;
   border-radius: 9px;
   padding: 14px 12px;
+  position: relative;
 }
 
 .chat-line {
@@ -88,9 +89,10 @@
 .composer {
   padding-top: 8px;
   display: flex;
+  flex-direction: column;
   align-items: center;
 }
-
+/* 
 .composer .input-wrapper {
   display: flex;
   background: var(--color-bg-input);
@@ -107,11 +109,6 @@
   border-radius: 8px;
   height: 4.8rem; 
 }
-
-.composer .blockedUser-input {
-  text-align: center;
-}
-
 .composer input:focus {
   border: none;
 }
@@ -129,6 +126,11 @@
 .composer .input-button img {
   width: 100%;
   height: 100%;
+} */
+
+.composer .blockedUser-input {
+  text-align: center;
+  width: 100%;
 }
 
 button.signIn{

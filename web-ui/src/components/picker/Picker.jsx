@@ -9,6 +9,8 @@ import "./Picker.css";
 const PickerComp = ({ handleOnEnter, setErrorMsg, streamData }) => {
   const [message, setMessage] = useState("");
   const [filter, setFilter] = useState(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [hoveredEmoji, setHoveredEmoji] = useState(null);
 
   const handleEnter = () => {
     if (config.USE_MOCK_DATA) {
@@ -20,7 +22,57 @@ const PickerComp = ({ handleOnEnter, setErrorMsg, streamData }) => {
       handleOnEnter(message);
       setMessage("");
     }
+    setPickerOpen(false);
   };
+
+  useEffect(() => {
+    document
+      .getElementsByClassName("react-input-emoji--button")[0]
+      .addEventListener("click", () => {
+        setPickerOpen(true);
+        setTimeout(() => {
+          let b = document.querySelectorAll("input[type=search]")[0];
+          if (!!b) b.focus();
+        }, 300);
+      });
+  });
+
+  useEffect(() => {
+    // let b = document.querySelectorAll("input[type=search]");
+    // console.log("b", b);
+    let eventEmoji;
+    if (!!pickerOpen) {
+      const emoji = document.getElementsByClassName("emoji-mart-emoji");
+      // console.log("emoji", emoji);
+      // emoji.addEventListener("mouseenter", (e) => {
+      //   console.log("event", e);
+      // });
+      window.onmouseover = function (e) {
+        // setHoveredEmoji("");
+        // e.target.className = "emoji-mart-emoji";
+
+        if (e.target.className === "emoji-mart-emoji") {
+          const str = e.target.ariaLabel && e.target.ariaLabel.split(", ")[1];
+          console.log(str);
+
+          // if(str !== )
+          setHoveredEmoji(str);
+
+          let tooltip = document.createElement("div");
+          tooltip.className = "tooltip";
+          tooltip.innerHTML = str;
+
+          // const tooltip = <div className="tooltip">{str}</div>;
+          e.target.appendChild(tooltip);
+          // e.target.className += " hovered";
+        }
+      };
+    }
+
+    if (!pickerOpen) {
+      console.log("pickerclosed", eventEmoji);
+    }
+  }, [pickerOpen]);
 
   useEffect(() => {
     let filter = new Filter();
@@ -49,6 +101,7 @@ const PickerComp = ({ handleOnEnter, setErrorMsg, streamData }) => {
         onEnter={handleEnter}
         placeholder="Type a message"
       />
+      {pickerOpen && <div style={{ position: "absolute" }}>{hoveredEmoji}</div>}
       <button className="input-button" onClick={handleEnter}>
         <img src="/icons/send.svg" />
       </button>

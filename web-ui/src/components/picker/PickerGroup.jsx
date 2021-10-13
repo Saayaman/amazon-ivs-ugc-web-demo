@@ -6,13 +6,7 @@ import PickerInput from "./PickerInput";
 import * as config from "../../config";
 import "./Picker.css";
 
-const PickerGroup = ({
-  handleOnEnter,
-  setErrorMsg,
-  streamData,
-  // setPickerOpen,
-  // pickerOpen,
-}) => {
+const PickerGroup = ({ handleOnEnter, setErrorMsg, streamData }) => {
   const [message, setMessage] = useState("");
   const [filter, setFilter] = useState(null);
   const [shortcode, setShortcode] = useState("");
@@ -76,10 +70,10 @@ const PickerGroup = ({
         setPickerOpen(true);
       } else {
         const text = inputValue.slice(
-          inputValue.indexOf(":") + 1,
+          inputValue.lastIndexOf(":") + 1,
           inputValue.length
         );
-
+        //check for whitespaces
         if (/\s/g.test(text)) {
           setShortcode("");
         } else {

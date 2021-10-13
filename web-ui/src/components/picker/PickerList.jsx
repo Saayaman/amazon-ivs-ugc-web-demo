@@ -1,15 +1,17 @@
 import React, { useEffect, useState, forwardRef, useRef } from "react";
 import emojis from "emoji-picker-element-data/en/emojibase/data.json";
 import ReactDOM from "react-dom";
+
+// Styles
 import "./PickerList.css";
 
 const PickerButton = ({ emoji, handleEmojiClick, setHoveredEmoji }) => {
+  const buttonRef = useRef();
+
   const handleMouseOver = (e) => {
     const position = e.target.getBoundingClientRect();
-    console.log("position", position);
-    console.log("tooltip", window.innerWidth - position.left);
     setHoveredEmoji({
-      top: position.top,
+      top: position.top + window.pageYOffset,
       right: window.innerWidth - position.left,
       shortcode: emoji.shortcodes[0],
     });
@@ -17,19 +19,13 @@ const PickerButton = ({ emoji, handleEmojiClick, setHoveredEmoji }) => {
 
   return (
     <button
+      ref={buttonRef}
       className="emoji-picker-list-emoji"
       onClick={() => handleEmojiClick(emoji.emoji)}
       onMouseOver={handleMouseOver}
       onMouseOut={() => setHoveredEmoji(null)}
     >
       {emoji.emoji}
-      {/* <div
-        ref={tooltipRef}
-        className="tooltiptext"
-        // onMouseOver={handleMouseOver}
-      >
-        {":" + emoji.shortcodes[0] + ":"}
-      </div> */}
     </button>
   );
 };
@@ -56,7 +52,6 @@ const PickerModal = forwardRef(
       const filteredEmojis = emojis.filter((emoji) => {
         return !!emoji.shortcodes.find((sc) => sc.includes(shortcode));
       });
-      console.log("filtered", filteredEmojis);
       setAllEmojis(filteredEmojis);
     }, [shortcode]);
 

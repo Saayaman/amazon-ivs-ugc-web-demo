@@ -27,16 +27,19 @@ button.emoji-picker-list-emoji {
 }
 
 .tooltiptext {
-  /* position: absolute;
-  left: calc(-50% + 2.4rem); */
   z-index: 20;
   font-size: 1.4rem;
-  /* transform: translateX(-50%); */
   background-color: #000;
   color: #fff;
   text-align: center;
   padding: 5px;
   border-radius: 6px;
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  0% {opacity:0;}
+  100% {opacity:1;}
 }
 
 .tooltiptext:after {
@@ -50,8 +53,8 @@ button.emoji-picker-list-emoji {
   border-color: #000 transparent transparent transparent;
 }
 
-/* .emoji-picker-list-emoji:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-  z-index: 100;
-} */
+@media (max-width: 767px) { /* Large Screens */
+  .tooltiptext::after {
+    left: calc(50% + 10px);
+  }
+}

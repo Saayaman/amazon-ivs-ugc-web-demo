@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT-0
 import React, { useEffect, useState, useRef, useContext } from "react";
 import PropTypes from "prop-types";
-import Picker from "../picker/Picker";
 import SettingsContext from "../../context/SettingsContext";
 import PickerGroup from "../picker/PickerGroup";
 import * as config from "../../config";
@@ -160,17 +159,10 @@ const Chat = ({ userInfo, handleSignIn, streamData }) => {
         )}
         <div className="composer">
           {!!userInfo.preferred_username && !blockedUser ? (
-            // <Picker
-            //   handleOnEnter={sendMessage}
-            //   setErrorMsg={setErrorMsg}
-            //   streamData={streamData}
-            // />
             <PickerGroup
               handleOnEnter={sendMessage}
               setErrorMsg={setErrorMsg}
               streamData={streamData}
-              // setPickerOpen={setPickerOpen}
-              // pickerOpen={pickerOpen}
             />
           ) : !userInfo.preferred_username ? (
             <button

@@ -13,9 +13,18 @@ const PickerButton = ({ emoji, handleEmojiClick, setHoveredEmoji }) => {
     setHoveredEmoji({
       top: position.top + window.pageYOffset,
       right: window.innerWidth - position.left,
-      shortcode: emoji.shortcodes[0],
+      shortcode: emoji.shortcodes && emoji.shortcodes[0],
     });
   };
+
+  if (emoji.shortcodes) {
+    if (
+      emoji.shortcodes[0] === "relaxed" ||
+      emoji.shortcodes[0] === "frowning_face"
+    ) {
+      return <></>;
+    }
+  }
 
   return (
     <button
@@ -99,7 +108,9 @@ const PickerModal = forwardRef(
                 right: hoveredEmoji.right - tooltipLength / 2 - 12,
               }}
             >
-              {":" + hoveredEmoji.shortcode + ":"}
+              {!!hoveredEmoji.shortcode
+                ? ":" + hoveredEmoji.shortcode + ":"
+                : "No shortcode"}
             </div>,
             document.body
           )}

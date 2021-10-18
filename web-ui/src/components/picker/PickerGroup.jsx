@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef, createRef } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import Filter from "bad-words";
 import PropTypes from "prop-types";
 import PickerList from "./PickerList";
 import PickerInput from "./PickerInput";
 import * as config from "../../config";
-import "./Picker.css";
 
 const PickerGroup = ({ handleOnEnter, setErrorMsg, streamData }) => {
   const [message, setMessage] = useState("");

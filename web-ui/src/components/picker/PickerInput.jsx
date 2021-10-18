@@ -1,4 +1,5 @@
 import React, { forwardRef } from "react";
+import PropTypes from "prop-types";
 import { ReactComponent as SendIcon } from "../../assets/send.svg";
 import { ReactComponent as SmilyIcon } from "../../assets/smily.svg";
 
@@ -41,5 +42,14 @@ const PickerInput = forwardRef(
 );
 
 PickerInput.displayName = "PickerInput";
+
+PickerInput.propTypes = {
+  handleEnter: PropTypes.func.isRequired,
+  handleKeyDown: PropTypes.func.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  pickerOpen: PropTypes.bool.isRequired,
+  setPickerOpen: PropTypes.func.isRequired,
+  message: PropTypes.string.isRequired,
+};
 
 export default PickerInput;

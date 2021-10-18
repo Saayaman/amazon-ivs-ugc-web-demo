@@ -1,4 +1,5 @@
 import React, { useEffect, useState, forwardRef, useRef } from "react";
+import PropTypes from "prop-types";
 import emojis from "emoji-picker-element-data/en/github/data.json";
 import ReactDOM from "react-dom";
 
@@ -37,6 +38,12 @@ const PickerButton = ({ emoji, handleEmojiClick, setHoveredEmoji }) => {
       {emoji.emoji}
     </button>
   );
+};
+
+PickerButton.propTypes = {
+  emoji: PropTypes.object.isRequired,
+  handleEmojiClick: PropTypes.func.isRequired,
+  setHoveredEmoji: PropTypes.func.isRequired,
 };
 
 const PickerModal = forwardRef(
@@ -120,5 +127,16 @@ const PickerModal = forwardRef(
 );
 
 PickerModal.displayName = "PickerModal";
+
+PickerModal.propTypes = {
+  pickerOpen: PropTypes.bool.isRequired,
+  handleEmojiClick: PropTypes.func.isRequired,
+  shortcode: PropTypes.string,
+  setSearchedPickerList: PropTypes.func.isRequired,
+};
+
+PickerModal.defaultProps = {
+  shortcode: "",
+};
 
 export default PickerModal;

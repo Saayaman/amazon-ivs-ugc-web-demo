@@ -93,11 +93,6 @@ button.emoji-mart-emoji:hover {
   height: 3.6rem;
 }
 
-/* button.emoji-mart-emoji.hovered {
-  background-color: red;
-  content: "hello";
-} */
-
 .emoji-mart-search {
   margin-top: 0 !important;
 }

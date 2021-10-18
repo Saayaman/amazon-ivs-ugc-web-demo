@@ -11,6 +11,7 @@ const PickerGroup = ({ handleOnEnter, setErrorMsg, streamData }) => {
   const [filter, setFilter] = useState(null);
   const [shortcode, setShortcode] = useState("");
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [searchedPickerList, setSearchedPickerList] = useState(null);
 
   const pickerRef = createRef();
   const inputRef = createRef();
@@ -65,26 +66,66 @@ const PickerGroup = ({ handleOnEnter, setErrorMsg, streamData }) => {
   };
 
   const handleChange = (inputValue) => {
-    if (inputValue.includes(":")) {
-      if (inputValue.charAt(inputValue.length - 1) === ":") {
-        setPickerOpen(true);
-      } else {
-        const text = inputValue.slice(
-          inputValue.lastIndexOf(":") + 1,
-          inputValue.length
+    const split = inputValue.split(" ");
+    const lastInputWord = split[split.length - 1];
+    const lastChar = inputValue.charAt(inputValue.length - 1);
+
+    if (lastInputWord.includes(":")) {
+      const shortcodeText = lastInputWord.slice(
+        lastInputWord.indexOf(":") + 1,
+        lastInputWord.length
+      );
+      const collonIsLastChar = lastChar === ":";
+
+      if (collonIsLastChar && shortcode.length > 0) {
+        const closedShortcode = lastInputWord.slice(
+          lastInputWord.indexOf(":") + 1,
+          lastInputWord.length - 1
         );
+
+        if (searchedPickerList.length > 0) {
+          const found = searchedPickerList.find((picker) => {
+            return (
+              picker.shortcodes && picker.shortcodes[0] === closedShortcode
+            );
+          });
+
+          if (!!found) {
+            const replaced = inputValue.replace(
+              `:${closedShortcode}:`,
+              found.emoji
+            );
+            setMessage(replaced);
+          } else {
+            setMessage(inputValue);
+          }
+        } else {
+          setMessage(inputValue);
+        }
+        setShortcode("");
+      } else if (collonIsLastChar) {
+        setPickerOpen(true);
+        setMessage(inputValue);
+      } else {
         //check for whitespaces
-        if (/\s/g.test(text)) {
+        if (/\s/g.test(shortcodeText)) {
           setShortcode("");
         } else {
-          setShortcode(text);
+          const textAfterLastCollon = lastInputWord.slice(
+            lastInputWord.lastIndexOf(":") + 1,
+            lastInputWord.length
+          );
+          setShortcode(textAfterLastCollon);
         }
+        setMessage(inputValue);
       }
     } else {
       setPickerOpen(false);
+      setMessage(inputValue);
+      if (lastChar === " ") {
+        setShortcode("");
+      }
     }
-
-    setMessage(inputValue);
   };
 
   return (
@@ -94,6 +135,7 @@ const PickerGroup = ({ handleOnEnter, setErrorMsg, streamData }) => {
         pickerOpen={pickerOpen}
         handleEmojiClick={handleEmojiClick}
         shortcode={shortcode}
+        setSearchedPickerList={setSearchedPickerList}
       />
       <PickerInput
         ref={inputRef}

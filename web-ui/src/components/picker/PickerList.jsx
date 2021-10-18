@@ -1,5 +1,5 @@
 import React, { useEffect, useState, forwardRef, useRef } from "react";
-import emojis from "emoji-picker-element-data/en/emojibase/data.json";
+import emojis from "emoji-picker-element-data/en/github/data.json";
 import ReactDOM from "react-dom";
 
 // Styles
@@ -31,8 +31,8 @@ const PickerButton = ({ emoji, handleEmojiClick, setHoveredEmoji }) => {
 };
 
 const PickerModal = forwardRef(
-  ({ pickerOpen, handleEmojiClick, shortcode }, ref) => {
-    const [allEmojis, setAllEmojis] = useState(emojis.flat());
+  ({ pickerOpen, handleEmojiClick, shortcode, setSearchedPickerList }, ref) => {
+    const [allEmojis, setAllEmojis] = useState(emojis);
     const [hoveredEmoji, setHoveredEmoji] = useState(null);
     const [tooltipLength, setTooltipLength] = useState(null);
     const tooltipRef = useRef(null);
@@ -49,11 +49,22 @@ const PickerModal = forwardRef(
     }, [hoveredEmoji]);
 
     useEffect(() => {
-      const filteredEmojis = emojis.filter((emoji) => {
-        return !!emoji.shortcodes.find((sc) => sc.includes(shortcode));
-      });
-      setAllEmojis(filteredEmojis);
+      if (!!emojis) {
+        const filteredEmojis = emojis.filter((emoji) => {
+          return (
+            (!!emoji.shortcodes &&
+              !!emoji.shortcodes.find((sc) => sc.includes(shortcode))) ||
+            !!emoji.tags.find((tag) => tag.includes(shortcode))
+          );
+        });
+        setAllEmojis(filteredEmojis);
+        setSearchedPickerList(filteredEmojis);
+      }
     }, [shortcode]);
+
+    if (!allEmojis) {
+      return <div>Loading...</div>;
+    }
 
     return (
       <>

@@ -15,26 +15,29 @@ const PickerInput = forwardRef(
       message,
     },
     ref
-  ) => (
-    <div className="emoji-picker-input">
-      <button
-        className={`emoji-picker-open-button ${!!pickerOpen ? "open" : ""}`}
-        onClick={setPickerOpen}
-      >
-        <SmilyIcon />
-      </button>
-      <input
-        ref={ref}
-        value={message}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        placeholder="Type a message"
-      />
-      <button className="emoji-picker-send-button" onClick={handleEnter}>
-        <SendIcon />
-      </button>
-    </div>
-  )
+  ) => {
+    console.log("message", message);
+    return (
+      <div className="emoji-picker-input">
+        <button
+          className={`emoji-picker-open-button ${!!pickerOpen ? "open" : ""}`}
+          onClick={setPickerOpen}
+        >
+          <SmilyIcon />
+        </button>
+        <input
+          ref={ref}
+          value={message}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          placeholder="Type a message"
+        />
+        <button className="emoji-picker-send-button" onClick={handleEnter}>
+          <SendIcon />
+        </button>
+      </div>
+    );
+  }
 );
 
 PickerInput.displayName = "PickerInput";

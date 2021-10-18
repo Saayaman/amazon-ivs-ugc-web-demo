@@ -2,8 +2,8 @@
 /* SPDX-License-Identifier: MIT-0 */
 
 .col-wrapper {
-  margin-left: 8px;
-  width: 400px;
+  margin-left: 0.8rem;
+  width: 40rem;
   flex-shrink: 0;
   align-self: stretch;
   position: relative;
@@ -26,8 +26,8 @@
   flex-direction: column-reverse;
   justify-content: end;
   border: 1px solid #4A4A4A;
-  border-radius: 9px;
-  padding: 14px 12px;
+  border-radius: 0.9rem;
+  padding: 1.4rem 1.2rem;
   position: relative;
 }
 
@@ -64,10 +64,10 @@
 }
 
 .messages-error {
-  background-color: #FFE249;
+  background-color: var(--color-yellow);
   color: #000000;
   border-radius: 0.8rem;
-  padding: 8px;
+  padding: 0.8rem;
   font-size: 1.4rem;
   font-weight: 500;
   margin-top: 0.8rem;
@@ -75,9 +75,9 @@
 }
 
 .messages-error-icon {
-  width: 20px;
-  margin-right: 10px;
-  height: 20px;
+  width: 2rem;
+  margin-right: 1rem;
+  height: 2rem;
   flex-shrink: 0;
 }
 
@@ -87,46 +87,11 @@
 }
 
 .composer {
-  padding-top: 8px;
+  padding-top: 0.8rem;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-/* 
-.composer .input-wrapper {
-  display: flex;
-  background: var(--color-bg-input);
-  border-radius: 8px;
-  align-items: center;
-  padding-left: 12px;
-  padding-right: 12px;
-  height: 4.8rem;
-}
-
-.composer input {
-  border: none;
-  width: 100%;
-  border-radius: 8px;
-  height: 4.8rem; 
-}
-.composer input:focus {
-  border: none;
-}
-
-.composer .input-button {
-  position: absolute;
-  right: 8px;
-  bottom: 12px;
-  background-color: unset;
-  padding: 0 !important;
-  width: 2.4rem;
-  height: 2.4rem;
-}
-
-.composer .input-button img {
-  width: 100%;
-  height: 100%;
-} */
 
 .composer .blockedUser-input {
   text-align: center;
@@ -135,7 +100,7 @@
 
 button.signIn{
   margin-bottom: 0;
-  background: #FFE249 !important;
+  background: var(--color-yellow) !important;
   color: var(--color-text-inverted);
   height: 4.8rem;
   border-radius: 0.8rem;
@@ -145,9 +110,9 @@ button.signIn{
 @media (max-width: 1080px) {
   .col-wrapper {
     width: 100%;
-    height: 400px;
+    height: 40rem;
     margin-left: unset;
-    margin-top: 24px;
+    margin-top: 2.4rem;
   }
 
   .messages-before-signIn.messages {

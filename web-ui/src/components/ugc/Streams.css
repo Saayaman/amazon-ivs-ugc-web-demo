@@ -18,8 +18,8 @@
 }
 
 .stream-item__image {
-  height: 50px;
-  width: 50px;
+  height: 5rem;
+  width: 5rem;
   border-radius: 50%;
   transition: box-shadow 0.25s ease, transform 0.25s ease;
 }

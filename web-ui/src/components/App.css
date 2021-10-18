@@ -18,6 +18,7 @@
   --color-bg-modal: var(--color-bg-base);
   --color-bg-modal-overlay: rgba(35,35,35,0.7);
   --stream-title-field-template: 1fr 10rem;
+  --color-yellow: #FFE249;
 }
 
 @media (max-width: 480px) { /* Smaller Screens */
@@ -160,9 +161,9 @@ header {
   max-width: 100%;
 
   display: grid;
-  grid-template-columns: 1fr 400px;
+  grid-template-columns: 1fr 40rem;
   grid-template-areas: "video chat" "streamTitle emptyBox";
-  grid-gap: 8px;
+  grid-gap: 0.8rem;
 }
 
 #video { grid-area: video; }

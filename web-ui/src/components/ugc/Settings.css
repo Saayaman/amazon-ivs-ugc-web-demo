@@ -42,7 +42,7 @@
 }
 
 .settings-tabs button.selected {
-  border-bottom: 2px solid #FFE249;
+  border-bottom: 2px solid var(--color-yellow);
   color: white;
   opacity: 1;
 }

@@ -144,10 +144,9 @@ const ChatSettings = () => {
                 onChange={(e) => handleChangeArray(e, WORD, index)}
                 onKeyDown={(e) => handleKeyDownUpdate(e, WORD, index)}
                 onMouseEnter={() => setShowCloseIcon(`WORD-${index}`)}
-                onMouseOut={() => setShowCloseIcon(null)}
               />
               {showCloseIcon === `WORD-${index}` &&
-                renderCloseIcon(() => deleteLine(CHATTER, index))}
+                renderCloseIcon(() => deleteLine(WORD, index))}
             </div>
           ))}
           <div className="settings-block-item  settings-block-item--last">
@@ -187,7 +186,6 @@ const ChatSettings = () => {
                 onChange={(e) => handleChangeArray(e, CHATTER, index)}
                 onKeyDown={(e) => handleKeyDownUpdate(e, CHATTER, index)}
                 onMouseEnter={() => setShowCloseIcon(`CHATTER-${index}`)}
-                onMouseOut={() => setShowCloseIcon(null)}
               />
               {showCloseIcon === `CHATTER-${index}` &&
                 renderCloseIcon(() => deleteLine(CHATTER, index))}

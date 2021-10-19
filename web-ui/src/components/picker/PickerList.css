@@ -4,6 +4,9 @@
   width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  border-top: 4px solid #525252;
+  border-right: 4px solid #525252;
+  border-bottom: 4px solid #525252;
   background: #525252;
   border-radius: 0.4rem;
   margin-bottom: 0.8rem;
